@@ -4,9 +4,17 @@ Repository for the SC2006 Software Engineering project by group SCE3-04.
 
 ## Current status
 
-The team is in **Lab 1: Requirements Elicitation**. The immediate goal is to select a Singapore-focused application that uses authorized real-world APIs and is substantial enough for a 4-6 person team to design, implement, test, and demonstrate in about 10 weeks.
+The team is in **Lab 1: Requirements Elicitation** and has selected **PlugPlan SG** as its project direction. The next goal is to validate the essential APIs and turn the agreed scope into requirements, Use Cases, a Data Dictionary, and UI Mockups.
 
 This project and API review was completed on **27 August 2026**. API availability, fields, quotas, and access rules can change, so the selected APIs must be tested again before the proposal is fixed.
+
+### Selected project: PlugPlan SG
+
+**PlugPlan SG** supports destination-aware EV charging decisions plus a voluntary community queue, charging-session handover, and issue-verification workflow.
+
+The [comprehensive PlugPlan SG proposal](plugplan-sg.md) is internal alignment material rather than a direct Lab submission. It records the agreed product boundary, data sources, features, brief Use Cases, state machines, decision logic, candidate design classes, quality targets, scope, risks, and feasibility experiments.
+
+The Internet review found current Singapore products that already provide live charger maps, filters, price information, vehicle estimates, favourites, and alerts. PlugPlan therefore treats those as baseline features and centers the course project on explainable arrival-aware recommendations, plan monitoring and fallback, a voluntary queue/session lifecycle, and moderated community reports.
 
 ## What the course project requires
 
@@ -84,9 +92,9 @@ The following public repositories were reviewed as examples of project scale and
 
 Strong public repositories commonly expose their setup instructions, frontend and backend separation, API documentation, tests, demo video, requirements, diagrams, architecture, design patterns, and traceability. We should copy that **documentation discipline**, not their product concepts.
 
-## Idea shortlist
+## Earlier idea shortlist
 
-Scores below are a team-planning judgment on a 1-5 scale, not course marks. **API fit** asks whether official data directly drives the application's value. **SE richness** asks whether the idea naturally produces meaningful Use Cases, entities, controls, UI states, access control, and tests.
+The scores below preserve the initial brainstorming record. They are a team-planning judgment on a 1-5 scale, not course marks. **API fit** asks whether official data directly drives the application's value. **SE richness** asks whether the idea naturally produces meaningful Use Cases, entities, controls, UI states, access control, and tests.
 
 | Rank | Working title | API fit | SE richness | 10-week feasibility | Originality against reviewed repositories | Main risk |
 |---:|---|:---:|:---:|:---:|:---:|---|
@@ -99,7 +107,7 @@ Scores below are a team-planning judgment on a 1-5 scale, not course marks. **AP
 
 ### 1. PlugPlan SG - EV charging decision and community queue coordinator
 
-**Recommendation:** best overall balance of current government data, clear user value, stateful workflows, and achievable scope.
+**Recommendation:** best overall balance of current government data, clear user value, stateful workflows, and achievable scope. The [detailed proposal](plugplan-sg.md) supersedes this early brainstorm.
 
 **Target users:** Electric Vehicle (EV) drivers; optional moderator or charging-site representative.
 
@@ -254,23 +262,15 @@ Scores below are a team-planning judgment on a 1-5 scale, not course marks. **AP
 
 **Scope guardrail:** Keep the product about last-service decisions for shift workers. Do not turn it into a generic journey planner, taxi booking service, personal-safety guarantee, or employer surveillance tool.
 
-## Recommendation
+## Selected project
 
-### Preferred choice: PlugPlan SG
+### PlugPlan SG
 
-Choose **PlugPlan SG** if the team can obtain and smoke-test an LTA DataMall Account Key during Lab 1. It uses a newly documented five-minute EV charging feed, creates clear decision logic and lifecycle states, and remains feasible without payment or operator integration. Its proposal must emphasize **connector-aware ranking and community queue/session coordination**, because "find a nearby carpark" is already a saturated project category.
-
-### Strong alternative: AccessPath SG
-
-Choose **AccessPath SG** if the team prefers a stronger social-impact story and is comfortable handling incomplete infrastructure data carefully. Build the MVP without depending on the request-only OneMap BFA API.
-
-### Strong multi-role alternative: SchoolGate SG
-
-Choose **SchoolGate SG** if the team wants the clearest access-control, matching, consent, and state-machine work. It demands the most careful privacy requirements.
+The team will proceed with **PlugPlan SG**, subject to an immediate smoke test of the LTA DataMall EV feed and OneMap routing. The project will emphasize **connector-aware arrival recommendations, plan fallback, and voluntary community queue/session coordination**. Payment, operator integration, remote charger control, and official reservation remain outside the project scope. See the [comprehensive proposal](plugplan-sg.md).
 
 ## API engineering decisions to make in Lab 1
 
-- Apply for an [LTA DataMall Account Key](https://datamall.lta.gov.sg/) immediately if any shortlisted idea uses LTA. Dynamic feeds are available only to registered subscribers, and requests send the `AccountKey` header.
+- Apply for an [LTA DataMall Account Key](https://datamall.lta.gov.sg/) immediately for PlugPlan SG. Dynamic feeds are available only to registered subscribers, and requests send the `AccountKey` header.
 - Register a [OneMap API account](https://www.onemap.gov.sg/apidocs/register). Search and Routing require a token; the official Authentication documentation says tokens remain valid for three days and must be refreshed.
 - Call third-party APIs from the backend. Never commit LTA or OneMap credentials, tokens, passwords, or `.env` files.
 - Add one adapter per external provider, server-side caching, request timeouts, retries with a limit, and a circuit-breaker or graceful fallback.
