@@ -6,15 +6,15 @@ Repository for the SC2006 Software Engineering project by group SCE3-04.
 
 The team is in **Lab 1: Requirements Elicitation** and has selected **PlugPlan SG** as its project direction. The next goal is to validate the essential APIs and turn the agreed scope into requirements, Use Cases, a Data Dictionary, and UI Mockups.
 
-This project and API review was completed on **27 August 2026**. API availability, fields, quotas, and access rules can change, so the selected APIs must be tested again before the proposal is fixed.
+The API review was completed on **27 August 2026**, and the selected scope was updated on **4 September 2026**. API availability, fields, quotas, and access rules can change, so the selected APIs must be tested again before the proposal is fixed.
 
 ### Selected project: PlugPlan SG
 
-**PlugPlan SG** supports destination-aware EV charging decisions plus a voluntary community queue, charging-session handover, and issue-verification workflow.
+**PlugPlan SG** provides arrival-aware EV charging recommendations, a "charge enough, not full" target, charging-time and cost estimates, strategy-based comparison, and an issue-verification workflow.
 
 The [comprehensive PlugPlan SG proposal](plugplan-sg.md) is internal alignment material rather than a direct Lab submission. It records the agreed product boundary, data sources, features, brief Use Cases, state machines, decision logic, candidate design classes, quality targets, scope, risks, and feasibility experiments.
 
-The Internet review found current Singapore products that already provide live charger maps, filters, price information, vehicle estimates, favourites, and alerts. PlugPlan therefore treats those as baseline features and centers the course project on explainable arrival-aware recommendations, plan monitoring and fallback, a voluntary queue/session lifecycle, and moderated community reports.
+The Internet review found current Singapore products that already provide live charger maps, filters, price information, vehicle estimates, favourites, and alerts. PlugPlan therefore treats those as baseline features and centers the course project on explainable arrival feasibility, minimum useful charge, time-and-cost estimates, strategy comparison, manual recalculation, and moderated community reports.
 
 ## What the course project requires
 
@@ -105,33 +105,32 @@ The scores below preserve the initial brainstorming record. They are a team-plan
 | 5 | **RecycleRun SG** | 3 | 5 | 4 | 4 | Some recycling datasets are old |
 | 6 | **ShiftShield SG** | 5 | 5 | 4 | 3 | Generic commuting is crowded, so scope discipline is essential |
 
-### 1. PlugPlan SG - EV charging decision and community queue coordinator
+### 1. PlugPlan SG - arrival-aware EV charging decision support
 
 **Recommendation:** best overall balance of current government data, clear user value, stateful workflows, and achievable scope. The [detailed proposal](plugplan-sg.md) supersedes this early brainstorm.
 
 **Target users:** Electric Vehicle (EV) drivers; optional moderator or charging-site representative.
 
-**Problem:** A charger shown as available now may be occupied by the time a driver arrives. Connector type, charging speed, price, operating hours, traffic, and expected trip detour all affect the decision. A map pin alone does not resolve that trade-off.
+**Problem:** A charger shown as available now may be incompatible, unreachable, too slow, too expensive, or unable to deliver the useful target charge within the driver's dwell time. A map pin alone does not resolve those trade-offs.
 
 **Core workflow and features:**
 
-1. Save a vehicle profile with compatible plug type and preferred charging speed.
-2. Search from a destination or route and filter incompatible charging points.
-3. Rank alternatives by live availability, estimated arrival time, charging price, detour, and user preferences.
-4. Compare the best options and explain each score rather than returning a black-box recommendation.
-5. Join a **community waitlist**, check in, start or end a session, and notify the next user.
-6. Report a blocked or faulty point, with moderation and expiry of old reports.
-7. Save favorite stations and receive an availability alert.
+1. Save a vehicle profile with battery capacity, efficiency, compatible plugs, AC/DC limits, and reserve SOC.
+2. Enter an origin, destination, current SOC, timing, and expected dwell window.
+3. Filter unreachable, incompatible, closed, or unsuitable charging points.
+4. Estimate arrival SOC, a "charge enough" target, charging time, and charging cost.
+5. Rank and compare alternatives using fixed fastest, cheapest, availability-first, minimum-detour, and balanced strategies.
+6. Manually refresh a saved plan and review an explained fallback when official data changes.
+7. Report a blocked or faulty point, with moderation and expiry of old reports.
 
 **Government APIs:**
 
 - [LTA DataMall API Guide](https://datamall.lta.gov.sg/content/dam/datamall/datasets/LTA_DataMall_API_User_Guide.pdf): `EVChargingPoints` and `EVCBatch` provide charger location, connector status, plug type, speed, price, and availability, with a stated five-minute update frequency.
-- LTA Traffic Incidents and Traffic Speed Bands for disruption-aware arrival estimates.
 - [OneMap Search](https://www.onemap.gov.sg/apidocs/search) and [OneMap Routing](https://www.onemap.gov.sg/apidocs/routing) for Singapore addresses and driving routes.
 
-**Why it fits SC2006:** API data changes the user's decision; the application includes persistent profiles, preferences, rankings, alerts, reports, moderation, and a waitlist state machine. Likely Entity Classes include `Driver`, `VehicleProfile`, `ChargingStation`, `ChargingPoint`, `AvailabilitySnapshot`, `Recommendation`, `QueueEntry`, `ChargingSession`, and `IssueReport`. Useful Control Classes include `StationRankingController`, `QueueController`, `SessionController`, and `NotificationController`.
+**Why it fits SC2006:** API data changes the user's decision; the application includes persistent profiles, plan versions, deterministic energy/time/cost calculations, strategy-based ranking, explainable comparisons, reports, and moderation. Likely Entity Classes include `Driver`, `VehicleProfile`, `ChargingPlan`, `PlanVersion`, `ChargingStation`, `Connector`, `RouteEstimate`, `ChargingEstimate`, `CostEstimate`, `Scorecard`, and `IssueReport`. Useful Control Classes include `VehicleEnergyController`, `ChargingFeasibilityController`, `ChargingCostController`, `StationRankingController`, and `IssueModerationController`.
 
-**Scope guardrail:** The application must say that its waitlist is community coordination and **not an official reservation**. The minimum viable product (MVP) should omit payment, charger control, and commercial operator integration.
+**Scope guardrail:** Estimates must expose their assumptions and must not be presented as vehicle telemetry, guaranteed availability, or a final operator bill. The MVP omits community queues, continuous monitoring, traffic/carpark integration, payment, charger control, and commercial operator integration.
 
 ### 2. AccessPath SG - accessibility-aware journey planning and barrier verification
 
@@ -266,7 +265,7 @@ The scores below preserve the initial brainstorming record. They are a team-plan
 
 ### PlugPlan SG
 
-The team will proceed with **PlugPlan SG**, subject to an immediate smoke test of the LTA DataMall EV feed and OneMap routing. The project will emphasize **connector-aware arrival recommendations, plan fallback, and voluntary community queue/session coordination**. Payment, operator integration, remote charger control, and official reservation remain outside the project scope. See the [comprehensive proposal](plugplan-sg.md).
+The team will proceed with **PlugPlan SG**, subject to an immediate smoke test of the LTA DataMall EV feed and OneMap routing. The project will emphasize **arrival-aware feasibility, a "charge enough" target, charging-time and cost estimates, fixed ranking strategies, explainable comparison, and manual fallback recalculation**. Community queues, continuous monitoring, payment, operator integration, remote charger control, and official reservation remain outside the project scope. See the [comprehensive proposal](plugplan-sg.md).
 
 ## API engineering decisions to make in Lab 1
 
@@ -288,8 +287,8 @@ A sensible MVP for this course should contain:
 - 2-3 meaningful human roles, including an administrator only when administration has real responsibilities
 - 6-8 core Use Cases that form complete user goals
 - one transparent recommendation, matching, prioritization, or scheduling algorithm
-- one stateful write workflow such as queueing, verification, assignment, or trip completion
-- one notification or subscription workflow
+- one stateful write workflow such as report verification or plan versioning
+- one external-data refresh and graceful-fallback workflow
 - role-based access control and validation
 - an external-API adapter and cache
 - automated tests for important Control Classes and deterministic API fixtures
