@@ -1,0 +1,62 @@
+<mxfile host="app.diagrams.net" modified="2026-09-04T00:00:00.000Z" agent="Codex" version="24.7.17" type="device">
+  <diagram id="plugplan-use-cases" name="Initial Use Case Diagram">
+    <mxGraphModel dx="1600" dy="980" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="980" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="boundary" value="PlugPlan SG" style="swimlane;html=1;rounded=0;startSize=38;horizontal=1;fontSize=20;fontStyle=1;strokeWidth=2;strokeColor=#1F2937;fillColor=#F8FAFC;swimlaneFillColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="350" y="20" width="900" height="900" as="geometry"/>
+        </mxCell>
+        <mxCell id="actor-user" value="External Data Providers&#xa;(OneMap and LTA DataMall)" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="1380" y="420" width="140" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="actor-driver" value="Driver" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="80" y="185" width="80" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="actor-moderator" value="Moderator" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="80" y="660" width="80" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc-access" value="UC-01&#xa;Access Account" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#E0F2FE;strokeColor=#0369A1;strokeWidth=2;fontSize=16;" vertex="1" parent="boundary">
+          <mxGeometry x="300" y="360" width="300" height="72" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc-profile" value="UC-02&#xa;Manage EV Profile" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#DCFCE7;strokeColor=#15803D;strokeWidth=2;fontSize=16;" vertex="1" parent="boundary">
+          <mxGeometry x="300" y="55" width="300" height="72" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc-create" value="UC-03&#xa;Create Charging Plan" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#DCFCE7;strokeColor=#15803D;strokeWidth=2;fontSize=16;" vertex="1" parent="boundary">
+          <mxGeometry x="300" y="150" width="300" height="72" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc-review" value="UC-04&#xa;Review and Compare&#xa;Recommendations" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#DCFCE7;strokeColor=#15803D;strokeWidth=2;fontSize=16;" vertex="1" parent="boundary">
+          <mxGeometry x="300" y="245" width="300" height="78" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc-reconfigure" value="UC-05&#xa;Reconfigure Charging Plan" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#DCFCE7;strokeColor=#15803D;strokeWidth=2;fontSize=16;" vertex="1" parent="boundary">
+          <mxGeometry x="300" y="455" width="300" height="72" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc-refresh" value="UC-06&#xa;Refresh Plan and&#xa;Select Fallback" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#DCFCE7;strokeColor=#15803D;strokeWidth=2;fontSize=16;" vertex="1" parent="boundary">
+          <mxGeometry x="300" y="550" width="300" height="78" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc-report" value="UC-07&#xa;Submit Charger Issue" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#DCFCE7;strokeColor=#15803D;strokeWidth=2;fontSize=16;" vertex="1" parent="boundary">
+          <mxGeometry x="300" y="655" width="300" height="72" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc-moderate" value="UC-08&#xa;Moderate Charger Reports" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#FEF3C7;strokeColor=#B45309;strokeWidth=2;fontSize=16;" vertex="1" parent="boundary">
+          <mxGeometry x="300" y="760" width="300" height="72" as="geometry"/>
+        </mxCell>
+        <mxCell id="assoc-user-access" style="endArrow=none;html=1;strokeWidth=2;" edge="1" parent="1" source="actor-driver" target="uc-access">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="assoc-moderator-access" style="endArrow=none;html=1;strokeWidth=2;" edge="1" parent="1" source="actor-moderator" target="uc-access"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="assoc-driver-profile" style="endArrow=none;html=1;strokeWidth=2;" edge="1" parent="1" source="actor-driver" target="uc-profile"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="assoc-driver-create" style="endArrow=none;html=1;strokeWidth=2;" edge="1" parent="1" source="actor-driver" target="uc-create"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="assoc-driver-review" style="endArrow=none;html=1;strokeWidth=2;" edge="1" parent="1" source="actor-driver" target="uc-review"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="assoc-driver-reconfigure" style="endArrow=none;html=1;strokeWidth=2;" edge="1" parent="1" source="actor-driver" target="uc-reconfigure"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="assoc-driver-refresh" style="endArrow=none;html=1;strokeWidth=2;" edge="1" parent="1" source="actor-driver" target="uc-refresh"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="assoc-driver-report" style="endArrow=none;html=1;strokeWidth=2;" edge="1" parent="1" source="actor-driver" target="uc-report"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="assoc-moderate" style="endArrow=none;html=1;strokeWidth=2;" edge="1" parent="1" source="actor-moderator" target="uc-moderate"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="assoc-onemap-create" style="endArrow=none;html=1;strokeWidth=2;" edge="1" parent="1" source="actor-user" target="uc-create"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="assoc-onemap-refresh" style="endArrow=none;html=1;strokeWidth=2;" edge="1" parent="1" source="actor-user" target="uc-refresh"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="legend" value="Solid lines are communication associations.&#xa;No include or extend relationship is asserted in this initial model." style="shape=note;whiteSpace=wrap;html=1;size=18;fillColor=#F8FAFC;strokeColor=#64748B;fontSize=13;align=left;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="1365" y="760" width="200" height="100" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

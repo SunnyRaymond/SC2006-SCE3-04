@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PlugPlan SG - Lab 1 UI Mockups</title>
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <style>
+    :root {
+      --ink: #0f172a;
+      --muted: #64748b;
+      --line: #cbd5e1;
+      --soft: #f1f5f9;
+      --panel: #ffffff;
+      --brand: #087f5b;
+      --brand-dark: #065f46;
+      --brand-soft: #d1fae5;
+      --blue: #0369a1;
+      --blue-soft: #e0f2fe;
+      --amber: #b45309;
+      --amber-soft: #fef3c7;
+      --red: #b91c1c;
+      --red-soft: #fee2e2;
+      --shadow: 0 12px 35px rgba(15, 23, 42, .12);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #e2e8f0; color: var(--ink); font: 15px/1.38 Arial, Helvetica, sans-serif; }
+    .gallery { display: grid; gap: 36px; padding: 36px; justify-content: center; }
+    .screen-wrap { position: relative; }
+    .frame-label { margin: 0 0 9px 4px; font-size: 13px; font-weight: 700; letter-spacing: .08em; color: #334155; text-transform: uppercase; }
+    .screen { width: 1200px; height: 740px; overflow: hidden; background: #f8fafc; border: 1px solid #94a3b8; border-radius: 18px; box-shadow: var(--shadow); position: relative; }
+    .screen.mobile { width: 390px; height: 844px; border-radius: 28px; margin: auto; }
+    .topbar { height: 68px; padding: 0 32px; display: flex; align-items: center; gap: 28px; background: #fff; border-bottom: 1px solid var(--line); }
+    .mobile .topbar { height: 60px; padding: 0 18px; gap: 12px; }
+    .brand { font-size: 21px; font-weight: 800; color: var(--brand-dark); white-space: nowrap; }
+    .nav { display: flex; gap: 24px; color: #475569; font-weight: 700; }
+    .nav .active { color: var(--brand-dark); }
+    .account { margin-left: auto; display: flex; align-items: center; gap: 9px; font-weight: 700; }
+    .avatar { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; color: #fff; background: var(--brand); }
+    main { height: calc(100% - 68px); padding: 26px 34px 30px; }
+    .mobile main { height: calc(100% - 60px); padding: 18px; overflow: hidden; }
+    h1 { margin: 0; font-size: 28px; line-height: 1.15; }
+    h2 { margin: 0; font-size: 19px; }
+    h3 { margin: 0; font-size: 16px; }
+    p { margin: 6px 0 0; }
+    .eyebrow { color: var(--brand-dark); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; font-weight: 800; }
+    .muted { color: var(--muted); }
+    .small { font-size: 12px; }
+    .pagehead { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 18px; }
+    .pagehead .lede { color: var(--muted); margin-top: 5px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .layout-main { display: grid; grid-template-columns: 1.22fr .78fr; gap: 18px; }
+    .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; }
+    .panel.soft { background: var(--soft); }
+    .panel.blue { background: var(--blue-soft); border-color: #7dd3fc; }
+    .panel.amber { background: var(--amber-soft); border-color: #fcd34d; }
+    .panel.red { background: var(--red-soft); border-color: #fca5a5; }
+    .panel.green { background: var(--brand-soft); border-color: #6ee7b7; }
+    .field { margin-bottom: 14px; }
+    .field:last-child { margin-bottom: 0; }
+    .profile-form { padding: 14px 18px; }
+    .profile-form .field { margin-bottom: 8px; }
+    .profile-form input, .profile-form select { height: 38px; }
+    label { display: block; font-weight: 700; margin-bottom: 6px; }
+    input, select, textarea { width: 100%; height: 42px; border: 1px solid #94a3b8; border-radius: 8px; background: #fff; color: var(--ink); padding: 9px 11px; font: inherit; }
+    textarea { height: 92px; resize: none; }
+    .input-row { display: flex; gap: 10px; }
+    .input-row > * { flex: 1; }
+    .hint { font-size: 12px; color: var(--muted); margin-top: 4px; }
+    .error { font-size: 12px; color: var(--red); margin-top: 4px; font-weight: 700; }
+    .invalid { border-color: var(--red); box-shadow: 0 0 0 2px #fecaca; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 42px; padding: 9px 16px; border-radius: 8px; border: 1px solid var(--brand); background: #fff; color: var(--brand-dark); font-weight: 800; }
+    .btn.primary { background: var(--brand); color: #fff; }
+    .btn.danger { border-color: var(--red); color: var(--red); }
+    .btn.smallbtn { min-height: 34px; padding: 6px 10px; font-size: 12px; }
+    .actions { display: flex; align-items: center; gap: 10px; margin-top: 16px; }
+    .actions .push { margin-left: auto; }
+    .pill { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 5px 9px; font-size: 12px; font-weight: 800; background: var(--soft); color: #334155; }
+    .pill.live { color: #166534; background: #dcfce7; }
+    .pill.stale { color: #92400e; background: #fef3c7; }
+    .pill.official { color: #075985; background: var(--blue-soft); }
+    .pill.estimate { color: #166534; background: var(--brand-soft); }
+    .pill.community { color: #7c2d12; background: #ffedd5; }
+    .check { width: 18px; height: 18px; border: 2px solid var(--brand); border-radius: 4px; display: inline-block; vertical-align: -4px; margin-right: 7px; background: #fff; }
+    .check.on { background: var(--brand); box-shadow: inset 0 0 0 3px #fff; }
+    .choice { padding: 11px 12px; border: 1px solid var(--line); border-radius: 9px; margin-bottom: 8px; background: #fff; }
+    .choice.selected { border: 2px solid var(--brand); background: #ecfdf5; }
+    .choice .dot { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--brand); display: inline-block; vertical-align: -2px; margin-right: 7px; }
+    .choice.selected .dot { box-shadow: inset 0 0 0 3px #ecfdf5; background: var(--brand); }
+    .status-line { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .sep { height: 1px; background: var(--line); margin: 14px 0; }
+    .metric { display: flex; justify-content: space-between; gap: 12px; margin: 6px 0; }
+    .metric span:first-child { color: var(--muted); }
+    .metric strong { text-align: right; }
+    .route-map { position: relative; height: 225px; overflow: hidden; border-radius: 12px; background:
+      linear-gradient(25deg, transparent 47%, #dbeafe 48%, #dbeafe 54%, transparent 55%),
+      linear-gradient(130deg, transparent 45%, #dcfce7 46%, #dcfce7 57%, transparent 58%),
+      #eef2f7; border: 1px solid var(--line); }
+    .route-map:before { content: ""; position: absolute; left: 12%; top: 64%; width: 76%; height: 5px; background: var(--blue); transform: rotate(-14deg); border-radius: 5px; }
+    .pin { position: absolute; width: 18px; height: 18px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); background: var(--brand); border: 3px solid #fff; box-shadow: 0 2px 5px #475569; }
+    .pin.a { left: 20%; top: 61%; }
+    .pin.b { left: 52%; top: 45%; background: var(--blue); }
+    .pin.c { left: 80%; top: 30%; background: var(--amber); }
+    .map-label { position: absolute; background: #fff; border: 1px solid var(--line); border-radius: 7px; padding: 4px 7px; font-size: 11px; font-weight: 700; box-shadow: 0 3px 8px rgba(15,23,42,.1); }
+    .map-label.one { left: 16%; top: 73%; }
+    .map-label.two { left: 47%; top: 56%; }
+    .map-label.three { left: 72%; top: 18%; }
+    .tabs { display: flex; gap: 7px; flex-wrap: wrap; }
+    .tab { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 7px 10px; font-size: 12px; font-weight: 800; color: #475569; }
+    .tab.active { color: #fff; background: var(--brand); border-color: var(--brand); }
+    .card { border: 1px solid var(--line); border-radius: 12px; background: #fff; padding: 14px; }
+    .card.best { border: 2px solid var(--brand); box-shadow: 0 8px 18px rgba(8,127,91,.12); }
+    .cardhead { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+    .rank { width: 26px; height: 26px; border-radius: 7px; background: var(--brand); color: #fff; display: grid; place-items: center; font-weight: 800; }
+    .explain { margin-top: 10px; background: #ecfdf5; border-radius: 8px; padding: 9px; font-size: 12px; color: #14532d; }
+    .state-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 12px; }
+    .state { min-height: 74px; border-radius: 9px; border: 1px dashed #94a3b8; background: #fff; padding: 9px; font-size: 11px; }
+    .state strong { display: block; margin-bottom: 3px; font-size: 12px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border-bottom: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+    th { color: #334155; background: #f8fafc; font-size: 12px; }
+    td strong { color: var(--brand-dark); }
+    .auth-shell { display: grid; grid-template-columns: 1.05fr .95fr; height: 100%; }
+    .auth-hero { padding: 74px; color: #fff; background: linear-gradient(145deg, #064e3b, #0f766e); position: relative; overflow: hidden; }
+    .auth-hero:after { content: ""; position: absolute; width: 420px; height: 420px; border-radius: 50%; right: -170px; bottom: -190px; border: 70px solid rgba(255,255,255,.08); }
+    .auth-hero h1 { font-size: 46px; margin-top: 110px; max-width: 450px; }
+    .auth-form { padding: 72px 88px; background: #fff; }
+    .auth-form .brand { margin-bottom: 74px; }
+    .summarybar { display: flex; gap: 18px; align-items: center; padding: 12px 14px; border: 1px solid var(--line); border-radius: 11px; background: #fff; margin-bottom: 14px; }
+    .summarybar strong { margin-right: auto; }
+    .compare th:first-child, .compare td:first-child { width: 25%; color: var(--muted); font-weight: 700; }
+    .queue-layout { display: grid; grid-template-columns: 330px 1fr; gap: 14px; height: 590px; }
+    .queue { overflow: hidden; }
+    .queue-item { padding: 12px; border-bottom: 1px solid var(--line); }
+    .queue-item.active { background: #ecfdf5; border-left: 4px solid var(--brand); }
+    .audit { border-left: 3px solid var(--line); padding-left: 13px; margin-top: 10px; }
+    .mobile h1 { font-size: 22px; }
+    .mobile .nav { display: none; }
+    .mobile .brand { font-size: 18px; }
+    .mobile .avatar { width: 30px; height: 30px; }
+    .mobile .panel { padding: 13px; border-radius: 12px; }
+    .mobile .field { margin-bottom: 11px; }
+    .mobile input, .mobile select { height: 40px; }
+    .mobile .route-map { height: 110px; }
+    .mobile .sticky { position: absolute; left: 0; right: 0; bottom: 0; padding: 12px 18px 18px; background: linear-gradient(transparent, #f8fafc 28%); }
+    .mobile .sticky .btn { width: 100%; }
+    .mobile .card { padding: 12px; }
+    .mobile .metric { margin: 4px 0; font-size: 12px; }
+    .mobile .tabs { flex-wrap: nowrap; overflow: hidden; }
+    .mobile .tab { white-space: nowrap; }
+    .mobile-print { display: none; }
+    .annotation { position: absolute; right: 16px; bottom: 14px; max-width: 325px; font-size: 11px; color: #475569; background: #fff; border: 1px dashed #94a3b8; border-radius: 8px; padding: 8px 10px; }
+    @page { size: A4 landscape; margin: 0; }
+    @media print {
+      body { background: #fff; }
+      .gallery { display: block; padding: 0; }
+      .screen-wrap { width: 1122px; height: 793px; page-break-after: always; break-after: page; break-inside: avoid; display: flex; justify-content: center; align-items: center; position: relative; }
+      .screen-wrap:last-child { page-break-after: auto; break-after: auto; }
+      .frame-label { position: absolute; top: 12px; left: 16px; z-index: 2; }
+      .screen { transform: scale(.86); box-shadow: none; }
+      /* Print the verified phone captures as one atomic image per page;
+         Chromium otherwise fragments absolutely positioned bottom actions. */
+      .mobile-wrap .screen.mobile { display: none; }
+      .mobile-wrap .mobile-print { display: block; height: 680px; width: auto; object-fit: contain; }
+    }
+  </style>
+</head>
+<body>
+  <div class="gallery">
+    <div class="screen-wrap">
+      <div class="frame-label">D-00 · Account Access · UC-01</div>
+      <section class="screen" id="d00">
+        <div class="auth-shell">
+          <div class="auth-hero">
+            <div class="brand" style="color:#fff">PlugPlan SG</div>
+            <h1>Plan a charging stop that fits your journey.</h1>
+            <p style="font-size:18px;max-width:460px;color:#d1fae5">Compare feasible chargers using route, vehicle, charging-time and price assumptions.</p>
+            <div class="panel" style="position:absolute;left:74px;bottom:62px;width:430px;background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.25)">
+              <strong>Decision support, not a reservation.</strong>
+              <p style="color:#d1fae5">Availability may change before arrival. PlugPlan does not control chargers or process payment.</p>
+            </div>
+          </div>
+          <div class="auth-form">
+            <div class="brand">PlugPlan SG</div>
+            <div class="eyebrow">Welcome back</div>
+            <h1 style="margin:7px 0 24px">Sign in to continue</h1>
+            <div class="field"><label>Email address</label><input value="driver@example.com"></div>
+            <div class="field"><label>Password</label><input type="password" value="example-password"></div>
+            <div class="status-line small"><span class="check on"></span> Keep me signed in on this device <span style="margin-left:auto;color:var(--blue);font-weight:700">Forgot password?</span></div>
+            <div class="actions"><span class="btn primary" style="width:100%">Sign In</span></div>
+            <p class="small" style="text-align:center;margin-top:18px">New to PlugPlan? <strong style="color:var(--brand-dark)">Create a Driver account</strong></p>
+            <div class="panel amber small" style="margin-top:28px"><strong>Role-aware access</strong><br>Moderators are directed to the report review workspace after authentication.</div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="screen-wrap">
+      <div class="frame-label">D-01 · Vehicle Profile &amp; Preferences · UC-02</div>
+      <section class="screen" id="d01">
+        <header class="topbar"><div class="brand">PlugPlan SG</div><nav class="nav"><span>Plan a Charge</span><span>Saved Plans</span><span>Reports</span><span class="active">Vehicle</span></nav><div class="account"><span>Jamie</span><span class="avatar">JD</span></div></header>
+        <main style="padding-top:18px">
+          <div class="pagehead" style="margin-bottom:12px"><div><div class="eyebrow">Driver settings</div><h1>Vehicle Profile &amp; Preferences</h1><p class="lede">Values are planning assumptions, not live vehicle telemetry.</p></div><span class="pill estimate">PlugPlan estimate inputs</span></div>
+          <div class="layout-main">
+            <div class="panel profile-form">
+              <div class="grid-2">
+                <div class="field"><label>Vehicle name</label><input value="My EV"></div>
+                <div class="field"><label>Usable battery capacity (kWh)</label><input value="60"></div>
+                <div class="field"><label>Estimated consumption (kWh/100 km)</label><input value="17.5"></div>
+                <div class="field"><label>Compatible plug types</label><select><option>CCS2</option></select><div class="hint">At least one plug type is required.</div></div>
+                <div class="field"><label>Maximum AC charging power (kW)</label><input value="11"></div>
+                <div class="field"><label>Maximum DC charging power (kW)</label><input value="120"></div>
+                <div class="field"><label>Default reserve SOC (%)</label><input class="invalid" value="45"><div class="error">Enter a value between 5% and 40%.</div></div>
+                <div class="field"><label>Maximum detour (min)</label><input value="15"></div>
+                <div class="field"><label>Minimum charger power (kW)</label><input value="22"></div>
+                <div class="field"><label>Maximum walking distance (m)</label><input value="500"></div>
+              </div>
+              <div class="actions"><span class="btn">Discard Changes</span><span class="btn danger">Delete Vehicle Profile</span><span class="push btn primary">Save Profile</span></div>
+            </div>
+            <aside>
+              <div class="panel green"><h2>Defaults used in every plan</h2><div class="sep"></div><div class="metric"><span>Reserve SOC</span><strong>20%</strong></div><div class="metric"><span>Charging efficiency</span><strong>90%</strong></div><div class="metric"><span>Taper warning</span><strong>Above 80% target</strong></div></div>
+              <div class="panel amber" style="margin-top:14px"><h3>2 saved plans use this profile</h3><p class="small">Existing plan versions keep their original assumptions. Future calculations use the updated values.</p></div>
+              <div class="panel" style="margin-top:14px"><h3>Validation state examples</h3><p class="small muted">Required fields show inline errors. Successful save: <strong style="color:var(--brand-dark)">Vehicle profile saved.</strong></p></div>
+            </aside>
+          </div>
+        </main>
+      </section>
+    </div>
+
+    <div class="screen-wrap">
+      <div class="frame-label">D-02 · Plan a Charging Stop · UC-03</div>
+      <section class="screen" id="d02">
+        <header class="topbar"><div class="brand">PlugPlan SG</div><nav class="nav"><span class="active">Plan a Charge</span><span>Saved Plans</span><span>Reports</span><span>Vehicle</span></nav><div class="account"><span>Jamie</span><span class="avatar">JD</span></div></header>
+        <main>
+          <div class="pagehead"><div><div class="eyebrow">New plan</div><h1>Plan a Charging Stop</h1><p class="lede">Tell us about your journey and available charging time.</p></div><span class="pill">My EV · 60 kWh · CCS2</span></div>
+          <div class="layout-main">
+            <div class="panel">
+              <div class="grid-2">
+                <div class="field"><label>Origin</label><input value="Nanyang Technological University"><div class="hint">Use current location</div></div>
+                <div class="field"><label>Destination</label><input value="Marina Bay Sands"></div>
+                <div class="field"><label>Current state of charge (SOC)</label><input value="28%"></div>
+                <div class="field"><label>Departure time (SGT)</label><input value="Today, 5:30 PM"></div>
+                <div class="field"><label>Expected stay at charger (min)</label><input value="45"></div>
+                <div class="field"><label>Maximum detour (min)</label><input value="15"></div>
+              </div>
+              <label>Charging target</label>
+              <div class="choice selected"><span class="dot"></span><strong>Automatic target - charge enough for this journey</strong><div class="hint">Includes the 20% reserve from your vehicle profile.</div></div>
+              <div class="choice"><span class="dot"></span><strong>Set a manual target</strong><div class="hint">The automatic target remains visible for comparison.</div></div>
+              <div class="actions"><span class="btn">Save as Draft</span><span class="btn">Cancel</span><span class="push btn primary">Find Charging Options</span></div>
+            </div>
+            <aside>
+              <div class="route-map"><span class="pin a"></span><span class="pin b"></span><span class="pin c"></span><span class="map-label one">NTU</span><span class="map-label two">Candidate area</span><span class="map-label three">Marina Bay</span></div>
+              <div class="panel blue" style="margin-top:14px"><h3>Assumptions used</h3><div class="metric small"><span>Consumption</span><strong>17.5 kWh/100 km</strong></div><div class="metric small"><span>Charging efficiency</span><strong>90%</strong></div><div class="metric small"><span>Reserve</span><strong>20%</strong></div></div>
+              <div class="panel red" style="margin-top:14px"><h3>Example route error</h3><p class="small">We could not calculate a route. Your inputs are preserved; try again later.</p></div>
+            </aside>
+          </div>
+        </main>
+      </section>
+    </div>
+
+    <div class="screen-wrap">
+      <div class="frame-label">D-03 · Charging Recommendations · UC-03, UC-04, UC-06</div>
+      <section class="screen" id="d03">
+        <header class="topbar"><div class="brand">PlugPlan SG</div><nav class="nav"><span class="active">Plan a Charge</span><span>Saved Plans</span><span>Reports</span><span>Vehicle</span></nav><div class="account"><span>Jamie</span><span class="avatar">JD</span></div></header>
+        <main style="padding-top:20px">
+          <div class="summarybar"><strong>NTU → Marina Bay · 28% SOC · 45 min stay</strong><span class="pill live">Live</span><span class="small muted">Observed 17:20 · Retrieved 17:22 SGT</span><span class="btn smallbtn">Edit Plan</span><span class="btn smallbtn">Refresh Data</span></div>
+          <div class="status-line" style="justify-content:space-between;margin-bottom:11px"><div><h1 style="font-size:24px">Charging Recommendations</h1><p class="small muted">3 feasible options · 5 excluded</p></div><div class="tabs"><span class="tab active">Balanced</span><span class="tab">Fastest Journey</span><span class="tab">Cheapest Charging</span><span class="tab">Availability First</span><span class="tab">Minimum Detour</span></div></div>
+          <div class="grid-3">
+            <article class="card best"><div class="cardhead"><div><span class="pill official">Official data</span><h2 style="margin-top:8px">JCube Mobility Hub</h2><p class="small muted">CCS2 · 120 kW</p></div><span class="rank">1</span></div><div class="sep"></div><div class="metric"><span>Compatible availability</span><strong>2 of 3 free</strong></div><div class="metric"><span>Estimated detour</span><strong>8 min</strong></div><div class="metric"><span>Estimated arrival SOC</span><strong>21%</strong></div><div class="metric"><span>Automatic target SOC</span><strong>42%</strong></div><div class="metric"><span>Required energy</span><strong>14.0 kWh</strong></div><div class="metric"><span>Estimated charge time</span><strong>14 min</strong></div><div class="metric"><span>Estimated cost</span><strong>S$7.42</strong></div><div class="explain"><strong>Why this option</strong><br>Compatible, within your detour, and reaches the suggested target during your 45-minute stay.</div><div class="actions"><span class="btn smallbtn">Compare</span><span class="push btn primary smallbtn">Select This Charger</span></div></article>
+            <article class="card"><div class="cardhead"><div><span class="pill official">Official data</span><h2 style="margin-top:8px">Clementi Central</h2><p class="small muted">CCS2 · 60 kW</p></div><span class="rank" style="background:#475569">2</span></div><div class="sep"></div><div class="metric"><span>Compatible availability</span><strong>1 of 2 free</strong></div><div class="metric"><span>Estimated detour</span><strong>6 min</strong></div><div class="metric"><span>Estimated arrival SOC</span><strong>22%</strong></div><div class="metric"><span>Automatic target SOC</span><strong>42%</strong></div><div class="metric"><span>Required energy</span><strong>13.3 kWh</strong></div><div class="metric"><span>Estimated charge time</span><strong>16 min</strong></div><div class="metric"><span>Estimated cost</span><strong>S$8.10</strong></div><div class="explain" style="background:#f8fafc;color:#334155"><strong>Why #2</strong><br>Shortest detour, but slower and slightly more expensive for this plan.</div><div class="actions"><span class="btn smallbtn">Compare</span><span class="push btn smallbtn">Select</span></div></article>
+            <aside>
+              <div class="route-map" style="height:225px"><span class="pin a"></span><span class="pin b"></span><span class="pin c"></span><span class="map-label one">Origin</span><span class="map-label two">#1</span><span class="map-label three">Destination</span></div>
+              <div class="state-grid" style="grid-template-columns:1fr 1fr">
+                <div class="state"><strong>Already enough charge</strong>Continue without a charging stop.</div>
+                <div class="state"><strong>No feasible options</strong>Edit route or increase dwell time.</div>
+                <div class="state"><strong>Cached data</strong>Live data unavailable; showing 17:05 SGT.</div>
+                <div class="state"><strong>Fallback required</strong>Selected connector is no longer suitable.</div>
+              </div>
+              <div class="panel amber small" style="margin-top:10px"><strong>Estimate warning:</strong> charging may slow above 80% SOC. Availability is not guaranteed.</div>
+            </aside>
+          </div>
+        </main>
+      </section>
+    </div>
+
+    <div class="screen-wrap">
+      <div class="frame-label">D-04 · Compare &amp; Reconfigure · UC-04, UC-05</div>
+      <section class="screen" id="d04">
+        <header class="topbar"><div class="brand">PlugPlan SG</div><nav class="nav"><span class="active">Plan a Charge</span><span>Saved Plans</span><span>Reports</span><span>Vehicle</span></nav><div class="account"><span>Jamie</span><span class="avatar">JD</span></div></header>
+        <main style="padding-top:20px">
+          <div class="pagehead"><div><div class="eyebrow">Plan Version 2</div><h1>Compare &amp; Reconfigure</h1><p class="lede">Compare up to three options using the same metric order.</p></div><div class="tabs"><span class="tab">Balanced</span><span class="tab active">Cheapest Charging</span><span class="tab">Fastest Journey</span></div></div>
+          <div class="layout-main" style="grid-template-columns:.72fr 1.28fr">
+            <aside class="panel">
+              <h2>What-if settings</h2><div class="sep"></div>
+              <div class="field"><label>Arrival time (SGT)</label><input value="6:15 PM"></div>
+              <div class="field"><label>Expected stay (min)</label><input value="35"></div>
+              <div class="field"><label>Reserve SOC (%)</label><input value="20"></div>
+              <div class="field"><label>Charging target</label><select><option>Automatic target (42%)</option></select></div>
+              <div class="panel blue small"><strong>Recalculation creates Plan Version 3.</strong><br>Plan Version 2 remains unchanged and traceable.</div>
+              <div class="actions"><span class="btn">Reset</span><span class="push btn primary">Recalculate</span></div>
+            </aside>
+            <section class="panel" style="padding:0;overflow:hidden">
+              <table class="compare">
+                <thead><tr><th>Metric</th><th>JCube Hub<br><span class="pill live">#1 Cheapest</span></th><th>Clementi Central<br><span class="pill">#2</span></th><th>Marina South<br><span class="pill stale">No longer feasible</span></th></tr></thead>
+                <tbody><tr><td>Estimated detour</td><td>8 min</td><td><strong>6 min</strong></td><td>18 min</td></tr><tr><td>Availability</td><td><strong>2 of 3 free</strong></td><td>1 of 2 free</td><td>0 of 2 free</td></tr><tr><td>Arrival SOC</td><td>21%</td><td>22%</td><td>17%</td></tr><tr><td>Target SOC</td><td>42%</td><td>42%</td><td>42%</td></tr><tr><td>Estimated charge time</td><td><strong>14 min</strong></td><td>16 min</td><td>28 min</td></tr><tr><td>Estimated cost</td><td><strong>S$7.42</strong></td><td>S$8.10</td><td>Price unavailable</td></tr><tr><td>Dwell fit</td><td>Fits 35 min</td><td>Fits 35 min</td><td>Not available</td></tr><tr><td>Data freshness</td><td>2 min</td><td>2 min</td><td>12 min · Stale</td></tr><tr><td>Recent verified issues</td><td>None</td><td>1 access issue</td><td>1 faulty connector</td></tr></tbody>
+              </table>
+              <div style="padding:10px 14px" class="status-line"><span class="pill estimate">Ranking explanation</span><span class="small">JCube moved to #1 because Cheapest Charging gives known estimated cost greater weight.</span><span class="push btn primary smallbtn">Choose JCube Hub</span></div>
+            </section>
+          </div>
+        </main>
+      </section>
+    </div>
+
+    <div class="screen-wrap">
+      <div class="frame-label">D-05 · Report a Charger Issue · UC-07</div>
+      <section class="screen" id="d05">
+        <header class="topbar"><div class="brand">PlugPlan SG</div><nav class="nav"><span>Plan a Charge</span><span>Saved Plans</span><span class="active">Reports</span><span>Vehicle</span></nav><div class="account"><span>Jamie</span><span class="avatar">JD</span></div></header>
+        <main>
+          <div class="pagehead"><div><div class="eyebrow">Community report</div><h1>Report a Charger Issue</h1><p class="lede">Help other drivers interpret a temporary site problem.</p></div><span class="pill community">Not an official operator status</span></div>
+          <div class="layout-main">
+            <div class="panel">
+              <div class="summarybar"><strong>JCube Mobility Hub</strong><span>Connector C-03 · CCS2 · 120 kW</span><span class="btn smallbtn">Change</span></div>
+              <label>Issue category</label>
+              <div class="grid-2"><div class="choice selected"><span class="dot"></span>Blocked bay</div><div class="choice"><span class="dot"></span>Suspected faulty connector</div><div class="choice"><span class="dot"></span>Incorrect location</div><div class="choice"><span class="dot"></span>Access problem</div></div>
+              <div class="field"><label>Describe what you observed</label><textarea>Non-EV vehicle occupying the marked charging bay.</textarea><div class="hint">Do not include personal information, faces or number plates.</div></div>
+              <div class="field"><label>Optional evidence</label><div class="choice">Add photo · JPG or PNG · maximum 5 MB</div></div>
+              <div class="actions"><span class="btn">Cancel</span><span class="btn">Open Official Reporting Channel</span><span class="push btn primary">Submit Report</span></div>
+            </div>
+            <aside>
+              <div class="panel amber"><h2>Expires automatically</h2><p>This report will expire at <strong>18:05 SGT tomorrow</strong> unless a moderator resolves it earlier.</p></div>
+              <div class="panel blue" style="margin-top:14px"><h3>Similar report found</h3><p class="small">A pending blocked-bay report was submitted 18 minutes ago.</p><div class="actions"><span class="btn smallbtn">View Existing Report</span></div></div>
+              <div class="panel green" style="margin-top:14px"><h3>Success state</h3><p class="small">Report submitted as <strong>Pending</strong>. Reference: IR-1042.</p></div>
+              <div class="panel red" style="margin-top:14px"><h3>Validation state</h3><p class="small">Image exceeds 5 MB. Choose a smaller JPG or PNG file.</p></div>
+            </aside>
+          </div>
+        </main>
+      </section>
+    </div>
+
+    <div class="screen-wrap">
+      <div class="frame-label">D-06 · Moderator Report Review · UC-08</div>
+      <section class="screen" id="d06">
+        <header class="topbar"><div class="brand">PlugPlan SG</div><nav class="nav"><span class="active">Report Queue</span><span>Audit History</span><span>Driver View</span></nav><div class="account"><span>Moderator</span><span class="avatar" style="background:var(--amber)">MO</span></div></header>
+        <main style="padding-top:20px">
+          <div class="pagehead" style="margin-bottom:12px"><div><div class="eyebrow">Restricted workspace</div><h1>Moderator Report Review</h1></div><div class="tabs"><span class="tab active">Pending 12</span><span class="tab">Verified 6</span><span class="tab">Resolved 31</span><span class="tab">Expired 14</span></div></div>
+          <div class="queue-layout">
+            <aside class="panel queue" style="padding:0"><div style="padding:12px"><input value="Search station or report ID"></div><div class="queue-item active"><span class="pill community">Blocked bay</span><h3 style="margin-top:7px">IR-1042 · JCube Hub</h3><p class="small muted">Submitted 18:05 · expires tomorrow</p></div><div class="queue-item"><span class="pill community">Faulty connector</span><h3 style="margin-top:7px">IR-1041 · Clementi Central</h3><p class="small muted">Submitted 17:42 · 2 related</p></div><div class="queue-item"><span class="pill community">Access problem</span><h3 style="margin-top:7px">IR-1038 · Marina South</h3><p class="small muted">Submitted 16:11 · official status changed</p></div></aside>
+            <section class="panel" style="padding:16px">
+              <div class="cardhead"><div><span class="pill community">Community evidence</span><h2 style="margin-top:8px">IR-1042 · Blocked bay</h2><p class="small muted">JCube Mobility Hub · Connector C-03 · CCS2</p></div><span class="pill">Pending</span></div>
+              <div class="grid-2" style="margin-top:12px"><div class="panel soft"><h3>Driver statement</h3><p class="small">Non-EV vehicle occupying the marked charging bay.</p><div style="height:95px;margin-top:9px;border-radius:8px;background:linear-gradient(135deg,#cbd5e1,#f8fafc);display:grid;place-items:center;color:#475569;font-weight:700">Evidence preview</div></div><div><div class="panel blue"><span class="pill official">Official data</span><div class="metric small"><span>Connector status</span><strong>Available</strong></div><div class="metric small"><span>Observed</span><strong>17:20 SGT</strong></div></div><div class="panel amber small" style="margin-top:9px"><strong>Related reports:</strong> 1 pending blocked-bay report at the same station.</div></div></div>
+              <div class="grid-2" style="margin-top:12px"><div><label>Decision reason</label><textarea placeholder="Required for every moderation action">Photo supports a temporary access obstruction; verify for the default expiry window.</textarea></div><div><h3>Audit history</h3><div class="audit small"><strong>18:05 · Submitted</strong><br>Driver account D-218 · Pending</div><div class="audit small"><strong>18:08 · Duplicate check</strong><br>Potential match IR-1039 identified</div></div></div>
+              <div class="actions"><span class="btn">Open Official Status</span><span class="btn">Merge</span><span class="btn danger">Reject</span><span class="push btn">Resolve</span><span class="btn primary">Verify</span></div>
+              <div class="panel red small" style="margin-top:10px"><strong>Concurrent update state:</strong> This report was updated by another moderator. Refresh before deciding.</div>
+            </section>
+          </div>
+        </main>
+      </section>
+    </div>
+
+    <div class="screen-wrap mobile-wrap">
+      <div class="frame-label">M-01 · Plan a Charging Stop - Mobile · responsive companion</div>
+      <section class="screen mobile" id="m01">
+        <header class="topbar"><div class="brand">PlugPlan SG</div><div class="account"><span class="avatar">JD</span></div></header>
+        <main>
+          <div class="eyebrow">New plan</div><h1>Plan a Charging Stop</h1><p class="small muted">My EV · 60 kWh · CCS2</p>
+          <div class="panel" style="margin-top:13px">
+            <div class="field"><label>Origin</label><input value="Nanyang Technological University"></div>
+            <div class="field"><label>Destination</label><input value="Marina Bay Sands"></div>
+            <div class="input-row"><div class="field"><label>Current SOC</label><input value="28%"></div><div class="field"><label>Stay (min)</label><input value="45"></div></div>
+            <div class="field"><label>Departure time (SGT)</label><input value="Today, 5:30 PM"></div>
+            <div class="choice selected"><span class="dot"></span><strong>Automatic target</strong><div class="hint">Charge enough + 20% reserve</div></div>
+            <div class="choice"><span class="dot"></span>Set a manual target</div>
+          </div>
+          <div class="panel blue small" style="margin-top:10px"><strong>Assumptions:</strong> 17.5 kWh/100 km · 90% charging efficiency.</div>
+          <div class="sticky"><span class="btn primary">Find Charging Options</span></div>
+        </main>
+      </section>
+      <img class="mobile-print" src="ui-mockups/M-01-Plan-Mobile.png" alt="M-01 Plan a Charging Stop mobile mockup">
+    </div>
+
+    <div class="screen-wrap mobile-wrap">
+      <div class="frame-label">M-02 · Charging Recommendations - Mobile · responsive companion</div>
+      <section class="screen mobile" id="m02">
+        <header class="topbar"><div class="brand">PlugPlan SG</div><span class="pill live" style="margin-left:auto">Live</span><div class="account"><span class="avatar">JD</span></div></header>
+        <main>
+          <div class="small muted">NTU → Marina Bay · 28% SOC · 45 min</div><h1 style="margin-top:4px">Recommendations</h1>
+          <div class="tabs" style="margin-top:10px"><span class="tab active">Balanced</span><span class="tab">Fastest</span><span class="tab">Cheapest</span></div>
+          <article class="card best" style="margin-top:11px"><div class="cardhead"><div><span class="pill official">Official</span><h2 style="margin-top:7px">JCube Mobility Hub</h2><p class="small muted">CCS2 · 120 kW · 2 of 3 free</p></div><span class="rank">1</span></div><div class="sep"></div><div class="metric"><span>Estimated detour</span><strong>8 min</strong></div><div class="metric"><span>Estimated arrival SOC</span><strong>21%</strong></div><div class="metric"><span>Automatic target</span><strong>42%</strong></div><div class="metric"><span>Estimated charge time</span><strong>14 min</strong></div><div class="metric"><span>Estimated cost</span><strong>S$7.42</strong></div><div class="explain"><strong>Why this option</strong><br>Compatible and reaches the target within your stay.</div><div class="actions"><span class="btn smallbtn">Compare</span><span class="push btn primary smallbtn">Select</span></div></article>
+          <div class="panel amber small" style="margin-top:10px"><strong>Fallback state:</strong> selected connector no longer suitable. Review the next-ranked option.</div>
+          <div class="status-line small" style="margin-top:10px"><span class="pill estimate">Estimated</span><span class="muted">Observed 17:20 · Retrieved 17:22 SGT</span></div>
+          <div class="sticky"><span class="btn">Refresh Data</span></div>
+        </main>
+      </section>
+      <img class="mobile-print" src="ui-mockups/M-02-Recommendations-Mobile.png" alt="M-02 Charging Recommendations mobile mockup">
+    </div>
+  </div>
+  <script>
+    const requestedScreen = new URLSearchParams(window.location.search).get('screen');
+    if (requestedScreen) {
+      document.querySelectorAll('.screen-wrap').forEach((wrapper) => {
+        const screen = wrapper.querySelector('.screen');
+        wrapper.style.display = screen && screen.id === requestedScreen ? 'block' : 'none';
+      });
+      document.querySelectorAll('.frame-label').forEach((label) => { label.style.display = 'none'; });
+      document.querySelector('.gallery').style.padding = '0';
+      document.body.style.background = '#ffffff';
+    }
+  </script>
+</body>
+</html>
