@@ -10,7 +10,7 @@ from docx.shared import Inches, Pt, RGBColor
 
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "PlugPlan-SG-Lab1-SRS.docx"
+OUT = ROOT / "Deliverables.docx"
 
 GREEN = "087F5B"
 DARK_GREEN = "065F46"
@@ -299,7 +299,7 @@ def add_title_page(doc):
     p = doc.add_paragraph()
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     p.paragraph_format.space_before = Pt(24)
-    r = p.add_run("Software Requirements Specification")
+    r = p.add_run("Lab 1 Deliverables")
     r.font.name = "Arial"
     r.font.size = Pt(30)
     r.font.bold = True
@@ -314,11 +314,11 @@ def add_title_page(doc):
     table.alignment = WD_TABLE_ALIGNMENT.CENTER
     table.autofit = False
     rows = [
-        ("Version", "1.0 - requirements frozen for AI critique"),
+        ("Version", "1.0"),
         ("Date", "4 September 2026"),
         ("Prepared for", "SC2006 Team SCE3-04"),
         ("Product", "PlugPlan SG"),
-        ("Document status", "Initial Lab 1 baseline"),
+        ("Document status", "Lab 1 submission"),
     ]
     for i, (a, b) in enumerate(rows):
         set_cell_text(table.rows[i].cells[0], a, bold=True, color=DARK_GREEN, size=10)
@@ -399,82 +399,32 @@ def build():
     add_title_page(doc)
 
     doc.add_heading("Document Control", level=1)
-    add_table(doc, ["Version", "Date", "Change", "Owner"], [["1.0", "4 September 2026", "Initial Lab 1 requirements baseline used for the AI critique.", "Team SCE3-04"]], widths=[0.7, 1.2, 3.8, 1.2], font_size=9)
-    doc.add_heading("Contribution and AI Disclosure", level=2)
-    doc.add_paragraph("This package was assembled in the repository under Raymond Guo's direction with drafting, diagram, mockup, formatting, and independent critique assistance from OpenAI Codex. Every team member must review, understand, and approve the technical content before submission. The complete team-member contribution allocation must be recorded in the accompanying Contributions.md file.")
+    add_table(doc, ["Version", "Date", "Change", "Owner"], [["1.0", "4 September 2026", "Initial Lab 1 deliverables baseline used for the AI critique.", "Team SCE3-04"]], widths=[0.7, 1.2, 3.8, 1.2], font_size=9)
     doc.add_heading("Document Map", level=2)
     add_table(doc, ["Section", "Contents"], [
-        ("1-3", "Purpose, scope, users, product context, and external interfaces"),
-        ("4", "Functional Requirements"),
-        ("5", "Non-Functional Requirements"),
-        ("6", "Data Dictionary"),
-        ("7", "Initial Use Case Diagram and Use Case Descriptions"),
-        ("8", "UI Mockups and HCI requirements"),
-        ("9", "Traceability and requirements decisions"),
+        ("1", "Functional Requirements"),
+        ("2", "Non-Functional Requirements"),
+        ("3", "Data Dictionary"),
+        ("4", "Initial Use Case Diagram and Use Case Descriptions"),
+        ("5", "UI Mockups and HCI requirements"),
+        ("6", "Traceability and requirements decisions"),
     ], widths=[1, 5.8], font_size=9)
 
-    doc.add_heading("1. Introduction", level=1)
-    doc.add_heading("1.1 Purpose", level=2)
-    doc.add_paragraph("This Software Requirements Specification defines the Lab 1 baseline for PlugPlan SG. It records atomic and verifiable requirements, important data terms, an initial UML Use Case Model, UI Mockups, and traceability links for later design, implementation, and testing.")
-    doc.add_heading("1.2 Product Scope", level=2)
-    doc.add_paragraph("PlugPlan SG is a responsive web-based decision-support application for Electric Vehicle (EV) drivers planning a charging stop in Singapore. A Driver provides an EV Profile, origin, destination, current State of Charge (SOC), departure time, maximum charging duration, and planning preferences. The system combines route estimates from OneMap with charging-station and connector data obtained through an LTA DataMall backend adapter. It identifies feasible connectors, estimates arrival SOC, recommends the minimum useful target SOC with a visible reserve, estimates charging time and cost, and ranks alternatives using fixed and explainable strategies. Drivers can compare alternatives, reconfigure a plan, manually refresh external data, select a fallback, and submit charger issue reports. Moderators review and resolve those reports.")
-    doc.add_heading("1.3 Intended Audience", level=2)
-    add_bullets(doc, ["Team SCE3-04 members implementing and testing the application.", "The SC2006 Lab Supervisor and Teaching Assistant reviewing Lab 1.", "Future maintainers tracing requirements to analysis, design, code, and tests."])
-    doc.add_heading("1.4 Document Conventions", level=2)
-    add_bullets(doc, ["Functional Requirements use unique FR identifiers and the normative word shall.", "Non-Functional Requirements use NFR identifiers and include a verification method.", "High priority means necessary for the main decision journey; Medium priority is required for the issue-reporting support journey.", "Terms defined in the Data Dictionary are capitalized when referring to the domain concept."])
-    doc.add_heading("1.5 References", level=2)
-    add_bullets(doc, ["SC2006 Lab 1 Manual, local course copy.", "SC2006 Frequently Asked Questions v4.1, local course copy.", "SC2006 supplied SRS Template and Use Case Template.", "PlugPlan SG Comprehensive Internal Proposal, scope update dated 4 September 2026.", "OneMap Search and Routing API documentation.", "LTA DataMall EV charging data documentation."])
-
-    doc.add_heading("2. Overall Description", level=1)
-    doc.add_heading("2.1 Product Perspective", level=2)
-    doc.add_paragraph("PlugPlan SG is a new, self-contained web application. The browser communicates only with the PlugPlan backend. Backend adapters normalize data from OneMap and LTA DataMall before the recommendation engine uses it. A persistent store keeps accounts, the single MVP EV Profile per Driver, Charging Plans and immutable Plan Versions, official-data snapshots, Issue Reports, and Moderation Decisions.")
-    doc.add_heading("2.2 User Classes and External Actors", level=2)
-    add_table(doc, ["Actor", "Type", "Goal or responsibility"], [
-        ("Driver", "Primary human actor", "Maintains an EV Profile, creates and compares plans, refreshes a plan, selects a fallback, and reports an issue."),
-        ("Moderator", "Primary human actor", "Reviews evidence and verifies, rejects, merges, resolves, or expires charger Issue Reports."),
-        ("External Data Providers", "Supporting system role", "OneMap resolves places and routes; LTA DataMall supplies station, connector, status, speed, price, and timestamp data."),
-    ], widths=[1.25, 1.35, 4.1], font_size=9)
-    doc.add_heading("2.3 In Scope", level=2)
-    add_bullets(doc, ["Responsive Driver and Moderator web interfaces.", "One EV Profile per Driver in the MVP.", "Singapore journey planning using origin, destination, current SOC, departure time, dwell time, and maximum detour.", "Arrival-SOC, minimum useful target, charging-energy, charging-time, cost, and dwell-fit estimates.", "Five fixed strategies: Fastest overall journey, Cheapest charging, Availability-first, Minimum detour, and Balanced.", "Manual plan refresh, fallback explanation, issue reporting, and moderation.", "Live, Cached, Stale, and Demo Fixture data states."])
-    doc.add_heading("2.4 Explicitly Out of Scope", level=2)
-    add_bullets(doc, ["Official reservation, bay enforcement, payment, wallet, subscriptions, remote charger activation, or charger control.", "Continuous background monitoring, automatic alerts, or guaranteed future availability.", "Community queues, waitlists, offers, check-ins, or charging-session handovers.", "Traffic or carpark integration, operator account integration, native mobile applications, and in-car systems.", "Machine Learning availability prediction or a numeric reliability probability."])
-    doc.add_heading("2.5 Fixed Requirements Decisions", level=2)
-    add_table(doc, ["Decision", "Lab 1 baseline"], [
-        ("Default reserve SOC", "20%; configurable from 5% to 40%."),
-        ("Charging efficiency", "90%; always disclosed as an assumption."),
-        ("High-SOC warning", "Displayed when a target exceeds 80%."),
-        ("Fastest strategy", "Earliest estimated arrival at the final destination after route and charging time."),
-        ("Unknown price", "Eligible for non-price strategies but never labelled the cheapest."),
-        ("Issue expiry", "24 hours unless a Moderator acts earlier."),
-        ("Data staleness", "LTA data older than 10 minutes is labelled Stale."),
-    ], widths=[2, 4.7], font_size=9)
-
-    doc.add_heading("3. External Interface Requirements", level=1)
-    doc.add_heading("3.1 User Interface", level=2)
-    add_bullets(doc, ["Every form uses persistent labels and visible units.", "Every calculated result is labelled as an estimate.", "Official data, PlugPlan calculations, and community reports use distinct text labels and visual treatments.", "A map is paired with a readable list alternative.", "Errors are placed next to the affected field and preserve user-entered values.", "The primary Driver journey has desktop and mobile mockups; moderation is desktop-first."])
-    doc.add_heading("3.2 Software Interfaces", level=2)
-    add_table(doc, ["Interface", "Input to PlugPlan", "Failure behavior"], [
-        ("OneMap Search and Routing", "Resolved coordinates, driving distance, and route duration.", "Preserve inputs and report ambiguity, timeout, or unavailable route."),
-        ("LTA DataMall adapter", "Station, connector, status, plug type, power, price, observed time, and retrieval time where available.", "Use a clearly labelled cached, stale, or Demo Fixture snapshot, or report that no usable data exists."),
-        ("PlugPlan persistent store", "Accounts, profiles, plans, versions, reports, decisions, and snapshots.", "Do not store a partial Plan Version or Moderation Decision."),
-    ], widths=[1.8, 3, 2.1], font_size=8.5)
-    doc.add_heading("3.3 Communications and Security", level=2)
-    doc.add_paragraph("Browser-to-backend and backend-to-provider communication uses HTTPS. Provider credentials remain server-side. The UI must never call a provider directly or expose provider secrets.")
-
-    doc.add_heading("4. Functional Requirements", level=1)
+    doc.add_heading("1. Functional Requirements", level=1)
     doc.add_paragraph("Each requirement is atomic enough to be verified independently. Inputs and outputs are made explicit in the requirement wording or linked Use Case.")
     add_table(doc, ["ID", "Priority", "Requirement"], functional_requirements, widths=[0.7, 0.8, 5.3], font_size=8.2)
 
-    doc.add_heading("5. Non-Functional Requirements", level=1)
+    doc.add_heading("2. Non-Functional Requirements", level=1)
     add_table(doc, ["ID", "Quality", "Requirement", "Verification"], nonfunctional_requirements, widths=[0.65, 1.2, 3.45, 1.5], font_size=7.8)
 
-    doc.add_heading("6. Data Dictionary", level=1)
+    doc.add_page_break()
+    doc.add_heading("3. Data Dictionary", level=1)
     doc.add_paragraph("The dictionary defines important domain terms, principal attributes and constraints, and relationships. Detailed database types and keys will be refined during analysis and design.")
     add_table(doc, ["Term", "Definition", "Important attributes and constraints", "Relationships"], data_dictionary, widths=[1.1, 1.6, 2.7, 1.4], font_size=7.4)
 
     add_section(doc, landscape=True)
-    doc.add_heading("7. Initial Use Case Model", level=1)
-    doc.add_heading("7.1 Initial UML Use Case Diagram", level=2)
+    doc.add_heading("4. Initial Use Case Model", level=1)
+    doc.add_heading("4.1 Initial UML Use Case Diagram", level=2)
     p = doc.add_paragraph()
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     # Keep the figure and its caption together on one landscape page.
@@ -485,7 +435,7 @@ def build():
     cap.runs[0].font.size = Pt(8.5)
 
     add_section(doc, landscape=False)
-    doc.add_heading("7.2 Use Case Catalogue", level=2)
+    doc.add_heading("4.2 Use Case Catalogue", level=2)
     add_table(doc, ["ID", "Use Case", "Primary actor", "Success outcome", "FR trace"], [
         ("UC-01", "Access Account", "Driver / Moderator", "An authenticated role-aware session is created.", "FR-01 to FR-02"),
         ("UC-02", "Manage EV Profile", "Driver", "A valid single MVP EV Profile is stored.", "FR-03 to FR-04"),
@@ -497,13 +447,13 @@ def build():
         ("UC-08", "Moderate Charger Reports", "Moderator", "A justified lifecycle decision is recorded.", "FR-25"),
     ], widths=[0.6, 1.6, 1.1, 2.8, 0.9], font_size=8)
     doc.add_page_break()
-    doc.add_heading("7.3 Use Case Descriptions", level=2)
+    doc.add_heading("4.3 Use Case Descriptions", level=2)
     doc.add_paragraph("The normal flow for every Use Case contains no more than six steps, following the Lab 1 rule of thumb.")
     for uc in use_cases:
         add_use_case(doc, uc)
 
     add_section(doc, landscape=True)
-    doc.add_heading("8. UI Mockups", level=1)
+    doc.add_heading("5. UI Mockups", level=1)
     doc.add_paragraph("The editable HTML and standalone UI-Mockups.pdf contain the same nine frames. The mockups intentionally expose normal, error, empty, stale-data, and fallback states because these states refine requirements rather than merely illustrate styling.")
     images = [
         ("D-00 Account Access", "D-00-Account-Access.png", "UC-01; role-aware account access"),
@@ -529,12 +479,12 @@ def build():
         cap.runs[0].italic = True
         cap.runs[0].font.size = Pt(8.5)
     doc.add_page_break()
-    doc.add_heading("8.1 HCI and Accessibility Requirements Elicited from the Mockups", level=2)
+    doc.add_heading("5.1 HCI and Accessibility Requirements Elicited from the Mockups", level=2)
     add_bullets(doc, ["Use explicit labels rather than placeholder-only fields.", "Show units for SOC, kWh, kW, km, minutes, and S$.", "Use SGT for time labels.", "Provide visible keyboard focus and a logical tab order in the implementation.", "Use icon and text, not colour alone, for status.", "Preserve entered values after provider errors.", "Explain disabled or unavailable actions.", "Require confirmation for profile deletion and destructive moderation actions.", "Keep metric order consistent between recommendation and comparison views.", "Keep data freshness, provenance, and estimate disclaimers visible on mobile.", "Pair every map with a list or text alternative.", "Use a 44 by 44 pixel target for touch controls where practical."])
 
     add_section(doc, landscape=False)
-    doc.add_heading("9. Traceability and Requirements Decisions", level=1)
-    doc.add_heading("9.1 Requirements-to-Use-Case-to-Screen Trace", level=2)
+    doc.add_heading("6. Traceability and Requirements Decisions", level=1)
+    doc.add_heading("6.1 Requirements-to-Use-Case-to-Screen Trace", level=2)
     add_table(doc, ["Requirement range", "Use Case(s)", "Mockup(s)", "Primary verification focus"], [
         ("FR-01 to FR-02", "UC-01", "D-00", "Registration, authentication, role-aware routing"),
         ("FR-03 to FR-04", "UC-02", "D-01", "Profile CRUD and field-specific validation"),
@@ -546,16 +496,16 @@ def build():
         ("FR-25", "UC-08", "D-06", "Role restriction, decision reason, audit history"),
         ("NFR-01 to NFR-10", "All applicable", "All applicable", "Performance, failure, freshness, correctness, security, privacy, accessibility, usability, reliability"),
     ], widths=[1.25, 1.35, 1.25, 2.85], font_size=8)
-    doc.add_heading("9.2 Acceptance Boundary", level=2)
+    doc.add_heading("6.2 Acceptance Boundary", level=2)
     doc.add_paragraph("This version is the requirements and Use Case baseline supplied to the independent AI critique. The separately submitted AI Critique Report quotes the original critique response and identifies one selected finding. Changes made after this baseline must update the version number and repeat the critique if the submitted requirements or diagram no longer match.")
-    doc.add_heading("9.3 Known Project Dependency", level=2)
+    doc.add_heading("6.3 Known Project Dependency", level=2)
     doc.add_paragraph("The live OneMap and LTA DataMall adapters must be smoke-tested before implementation claims are finalized. The MVP therefore requires deterministic Demo Fixture behavior and must label it explicitly. No requirement depends on unverified access to payment, reservation, charger control, or future-availability prediction.")
 
     props = doc.core_properties
-    props.title = "PlugPlan SG Software Requirements Specification - Lab 1"
+    props.title = "PlugPlan SG Lab 1 Deliverables"
     props.subject = "SC2006 Lab 1 Requirements Elicitation"
     props.author = "Team SCE3-04"
-    props.keywords = "SC2006, PlugPlan SG, SRS, requirements, use cases, UI mockups"
+    props.keywords = "SC2006, PlugPlan SG, Lab 1, requirements, use cases, UI mockups"
     doc.save(OUT)
     print(OUT)
 

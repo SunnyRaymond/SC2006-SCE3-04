@@ -6,13 +6,13 @@ This directory contains the complete Lab 1 requirements baseline for Team SCE3-0
 
 | Deliverable | Primary file | Companion or editable source |
 |---|---|---|
-| Software Requirements Specification | `PlugPlan-SG-Lab1-SRS.pdf` | `PlugPlan-SG-Lab1-SRS.docx` |
+| Requirements, Data Dictionary, Use Case Model, and UI Mockups | `Deliverables.pdf` | `Deliverables.docx` |
 | Initial UML Use Case Diagram | `Use-Case-Diagram.drawio.pdf` | `Use-Case-Diagram.drawio`, `Use-Case-Diagram.drawio.png` |
 | UI Mockups | `UI-Mockups.pdf` | `UI-Mockups.html`, `ui-mockups/`, and the Figma file linked below |
 | AI Critique Report | `AI-Critique-Report.pdf` | `AI-Critique-Report.docx` |
 | Contribution Statement | `Contributions.md` | Complete the outstanding team identity row before submission |
 
-The SRS version 1.0 contains 25 Functional Requirements, 10 Non-Functional Requirements, a 13-term Data Dictionary, eight Use Case descriptions, nine UI frames, and end-to-end traceability.
+`Deliverables` version 1.0 contains 25 Functional Requirements, 10 Non-Functional Requirements, a 13-term Data Dictionary, eight Use Case descriptions, nine UI frames, and end-to-end traceability.
 
 ## Figma Design
 
@@ -22,7 +22,7 @@ The Figma page was captured from `UI-Mockups.html`. The local PDF and PNG files 
 
 ## Baseline Consistency
 
-The independent AI critique uses the final SRS version 1.0 and `Use-Case-Diagram.drawio.png`. If either input changes, increment the requirements version and repeat the critique so the submitted prompt, response, and reviewed artifacts remain consistent.
+The independent AI critique uses the requirements in `Deliverables` version 1.0 and `Use-Case-Diagram.drawio.png`. If either input changes, increment the requirements version and repeat the critique so the submitted prompt, response, and reviewed artifacts remain consistent.
 
 ## Before Submission
 
