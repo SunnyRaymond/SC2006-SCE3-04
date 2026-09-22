@@ -1,0 +1,20 @@
+[
+  {
+    "section": "entity",
+    "file": "diagrams/entity-01-ownership.drawio.png",
+    "title": "2 Class diagram of entity classes Ownership",
+    "caption": "Driver ownership, optional current profile, version composition and mutable version-qualified selection."
+  },
+  {
+    "section": "entity",
+    "file": "diagrams/entity-02-calculation.drawio.png",
+    "title": "2 Class diagram of entity classes Calculation",
+    "caption": "Immutable calculation results, exact provider evidence, route legs and connector assessments. Repeated classes are the same entities across views."
+  },
+  {
+    "section": "entity",
+    "file": "diagrams/entity-03-moderation.drawio.png",
+    "title": "2 Class diagram of entity classes Moderation",
+    "caption": "Physical inventory, issue targets and audit history. The station faulty mark is derived from existing report/decision evidence."
+  }
+]

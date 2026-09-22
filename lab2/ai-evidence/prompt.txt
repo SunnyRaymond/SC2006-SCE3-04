@@ -1,0 +1,8 @@
+You are an independent AI reviewer for SC2006 Lab 2. Read D:/Downloads/SC2006-SCE3-04/lab2/source/system_description.md and inspect all three supplied conceptual class diagram images using view_image:
+D:/Downloads/SC2006-SCE3-04/lab2/diagrams/entity-01-ownership.drawio.png
+D:/Downloads/SC2006-SCE3-04/lab2/diagrams/entity-02-calculation.drawio.png
+D:/Downloads/SC2006-SCE3-04/lab2/diagrams/entity-03-moderation.drawio.png
+
+Based on these design materials, recommend a technology stack appropriate for an entry-level software engineering team. Explain how the proposed technologies support the depicted entities, immutable Plan Versions, provider adapters, role-restricted moderation and the rank-then-filter faulty-station rule. Identify avoidable complexity and a simpler alternative where appropriate. The team's existing technology experience has not been supplied; do not invent it. Treat this as a provisional discussion for a course project, not a binding design or a claim of implementation. Preserve the recommendation-only scope and manual refresh.
+
+Write a concise original response in English, approximately 300–400 words, including at least one technology that is not a programming language. Verify current technology capability claims using primary official documentation and include 2–4 source URLs. Use plain text paragraphs or numbered items, without Markdown headings or tables. Save your complete response verbatim to D:/Downloads/SC2006-SCE3-04/lab2/ai-evidence/response.md and return the identical text as your final answer. Do not edit the supplied inputs or write the student's selected-technology opinion. This is read-only review and lightweight local document writing; do not use a compute cluster.

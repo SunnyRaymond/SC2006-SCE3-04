@@ -1,0 +1,122 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net">
+  <diagram name="Driver UI Dialog Map" id="Driver-UI-Dialog-Map">
+    <mxGraphModel page="1" pageWidth="1320" pageHeight="740" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="access" value="D-00 Account Access&#10;&#10;Sign-in / registration / errors" style="rounded=1;arcSize=15;whiteSpace=wrap;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=18;spacing=12;fillColor=#F0F5FA;strokeColor=#475569;strokeWidth=1.6;" vertex="1" parent="1">
+          <mxGeometry x="30" y="65" width="300" height="135" as="geometry" />
+        </mxCell>
+        <mxCell id="profile" value="D-01 Vehicle Profile&#10;&#10;Empty / edit / saved / validation" style="rounded=1;arcSize=15;whiteSpace=wrap;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=18;spacing=12;fillColor=#F0F5FA;strokeColor=#475569;strokeWidth=1.6;" vertex="1" parent="1">
+          <mxGeometry x="510" y="65" width="340" height="135" as="geometry" />
+        </mxCell>
+        <mxCell id="input" value="D-02 Plan Input  =  M-01&#10;&#10;Journey inputs / manual target&#10;Ambiguity or route error retains inputs" style="rounded=1;arcSize=15;whiteSpace=wrap;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=18;spacing=12;fillColor=#F0F5FA;strokeColor=#475569;strokeWidth=1.6;" vertex="1" parent="1">
+          <mxGeometry x="510" y="355" width="340" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="results" value="D-03 Recommendations  =  M-02&#10;&#10;Shortlist / one option / no options&#10;Enough charge / fallback / data state" style="rounded=1;arcSize=15;whiteSpace=wrap;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=18;spacing=12;fillColor=#F0F5FA;strokeColor=#475569;strokeWidth=1.6;" vertex="1" parent="1">
+          <mxGeometry x="30" y="355" width="340" height="185" as="geometry" />
+        </mxCell>
+        <mxCell id="compare" value="D-04 Compare and Reconfigure&#10;&#10;Comparison / pending edits / reset&#10;Provider failure keeps prior version" style="rounded=1;arcSize=15;whiteSpace=wrap;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=18;spacing=12;fillColor=#F0F5FA;strokeColor=#475569;strokeWidth=1.6;" vertex="1" parent="1">
+          <mxGeometry x="980" y="355" width="320" height="185" as="geometry" />
+        </mxCell>
+        <mxCell id="initial" value="" style="ellipse;fillColor=#111111;strokeColor=#111111;" vertex="1" parent="1">
+          <mxGeometry x="140" y="5" width="20" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="start" edge="1" parent="1" style="endArrow=none;strokeColor=#475569;strokeWidth=1.7;rounded=0;endArrow=block;endFill=1;endSize=10;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="150" y="25" as="sourcePoint" />
+            <mxPoint x="150" y="65" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="login" edge="1" parent="1" style="endArrow=none;strokeColor=#475569;strokeWidth=1.7;rounded=0;endArrow=block;endFill=1;endSize=10;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="330" y="132" as="sourcePoint" />
+            <mxPoint x="510" y="132" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="txt1" value="valid Driver login" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=16;fontFamily=Arial;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="336" y="85" width="170" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="validprofile" edge="1" parent="1" style="endArrow=none;strokeColor=#475569;strokeWidth=1.7;rounded=0;endArrow=block;endFill=1;endSize=10;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="680" y="200" as="sourcePoint" />
+            <mxPoint x="680" y="355" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="txt2" value="Plan a Charge&#10;[valid profile]" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=16;fontFamily=Arial;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="690" y="285" width="195" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="find" edge="1" parent="1" style="endArrow=none;strokeColor=#475569;strokeWidth=1.7;rounded=0;endArrow=block;endFill=1;endSize=10;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="510" y="435" as="sourcePoint" />
+            <mxPoint x="370" y="435" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="txt3" value="Find options&#10;[valid inputs]" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=16;fontFamily=Arial;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="372" y="359" width="135" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="edit" edge="1" parent="1" style="endArrow=none;strokeColor=#475569;strokeWidth=1.7;rounded=0;endArrow=block;endFill=1;endSize=10;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="190" y="355" as="sourcePoint" />
+            <mxPoint x="595" y="355" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="190" y="280" />
+              <mxPoint x="595" y="280" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="txt4" value="Edit plan" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=16;fontFamily=Arial;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="272" y="285" width="190" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="opencompare" edge="1" parent="1" style="endArrow=none;strokeColor=#475569;strokeWidth=1.7;rounded=0;endArrow=block;endFill=1;endSize=10;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="370" y="490" as="sourcePoint" />
+            <mxPoint x="1140" y="540" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="440" y="490" />
+              <mxPoint x="440" y="605" />
+              <mxPoint x="1140" y="605" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="txt5" value="Compare [2–3 options] or reconfigure" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=16;fontFamily=Arial;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="545" y="565" width="390" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="recalc" edge="1" parent="1" style="endArrow=none;strokeColor=#475569;strokeWidth=1.7;rounded=0;endArrow=block;endFill=1;endSize=10;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1140" y="355" as="sourcePoint" />
+            <mxPoint x="260" y="355" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="1140" y="255" />
+              <mxPoint x="260" y="255" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="txt6" value="Recalculate [valid] / new version" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=16;fontFamily=Arial;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="770" y="210" width="350" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="refresh" edge="1" parent="1" style="endArrow=none;strokeColor=#475569;strokeWidth=1.7;rounded=0;endArrow=block;endFill=1;endSize=10;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="30" y="435" as="sourcePoint" />
+            <mxPoint x="160" y="540" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="8" y="435" />
+              <mxPoint x="8" y="580" />
+              <mxPoint x="160" y="580" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="txt7" value="Refresh /&#10;new version" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=16;fontFamily=Arial;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="15" y="587" width="160" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="txt8" value="At every calculation: generate and rank → apply active Moderator faulty filter → form shortlist. Failure shows an in-state error without a partial version." style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=16;fontFamily=Arial;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="890" y="45" width="400" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="txt9" value="M-01 and M-02 are responsive renderings of D-02 and D-03. In-state validation, reset and failure paths are specified in the transition table. Any authenticated state: sign out/session expiry → D-00. Moderator login → D-06 (next map)." style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=16;fontFamily=Arial;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="30" y="680" width="1260" height="95" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

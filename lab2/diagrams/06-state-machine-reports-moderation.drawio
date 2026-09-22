@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net">
+  <diagram name="Reporting and moderation UI Dialog Map" id="Reporting-and-moderation-UI-Dialog-Map">
+    <mxGraphModel page="1" pageWidth="1320" pageHeight="740" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="context" value="D-03 or M-02&#10;&#10;Selected station / connector" style="rounded=1;arcSize=15;whiteSpace=wrap;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=18;spacing=12;fillColor=#F0F5FA;strokeColor=#475569;strokeWidth=1.6;" vertex="1" parent="1">
+          <mxGeometry x="30" y="45" width="330" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="report" value="D-05 Issue Report&#10;&#10;Form / duplicate / validation&#10;Pending acknowledgement + reference" style="rounded=1;arcSize=15;whiteSpace=wrap;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=18;spacing=12;fillColor=#F0F5FA;strokeColor=#475569;strokeWidth=1.6;" vertex="1" parent="1">
+          <mxGeometry x="540" y="45" width="400" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="open" edge="1" parent="1" style="endArrow=none;strokeColor=#475569;strokeWidth=1.7;rounded=0;endArrow=block;endFill=1;endSize=10;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="360" y="105" as="sourcePoint" />
+            <mxPoint x="540" y="105" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="txt1" value="Report an Issue" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=16;fontFamily=Arial;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="360" y="60" width="180" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="cancel" edge="1" parent="1" style="endArrow=none;strokeColor=#475569;strokeWidth=1.7;rounded=0;endArrow=block;endFill=1;endSize=10;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="680" y="215" as="sourcePoint" />
+            <mxPoint x="190" y="175" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="680" y="265" />
+              <mxPoint x="190" y="265" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="txt2" value="Cancel / return to station" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=16;fontFamily=Arial;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="270" y="220" width="315" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="submit" edge="1" parent="1" style="endArrow=none;strokeColor=#475569;strokeWidth=1.7;rounded=0;endArrow=block;endFill=1;endSize=10;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="940" y="120" as="sourcePoint" />
+            <mxPoint x="870" y="215" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="1250" y="120" />
+              <mxPoint x="1250" y="240" />
+              <mxPoint x="870" y="240" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="txt3" value="Submit [valid] /&#10;Pending confirmation&#10;No station exclusion" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=16;fontFamily=Arial;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="965" y="155" width="260" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="separator" value="" style="fillColor=#CBD5E1;strokeColor=#CBD5E1;" vertex="1" parent="1">
+          <mxGeometry x="25" y="320" width="1280" height="1" as="geometry" />
+        </mxCell>
+        <mxCell id="auth" value="D-00 Account Access&#10;&#10;Moderator sign-in" style="rounded=1;arcSize=15;whiteSpace=wrap;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=18;spacing=12;fillColor=#F0F5FA;strokeColor=#475569;strokeWidth=1.6;" vertex="1" parent="1">
+          <mxGeometry x="30" y="390" width="330" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="moderate" value="D-06 Moderator Review&#10;&#10;Queue / report details / audit history&#10;Decision confirmation / success&#10;Reason error / conflict and retry" style="rounded=1;arcSize=15;whiteSpace=wrap;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=18;spacing=12;fillColor=#F0F5FA;strokeColor=#475569;strokeWidth=1.6;" vertex="1" parent="1">
+          <mxGeometry x="540" y="385" width="440" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="login" edge="1" parent="1" style="endArrow=none;strokeColor=#475569;strokeWidth=1.7;rounded=0;endArrow=block;endFill=1;endSize=10;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="360" y="455" as="sourcePoint" />
+            <mxPoint x="540" y="455" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="txt4" value="valid Moderator&#10;session" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=16;fontFamily=Arial;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="365" y="390" width="165" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="decision" edge="1" parent="1" style="endArrow=none;strokeColor=#475569;strokeWidth=1.7;rounded=0;endArrow=block;endFill=1;endSize=10;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="980" y="455" as="sourcePoint" />
+            <mxPoint x="850" y="585" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="1260" y="455" />
+              <mxPoint x="1260" y="625" />
+              <mxPoint x="850" y="625" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="txt5" value="Decide [authorized, reason,&#10;current report] / update&#10;D-06 status and audit" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=16;fontFamily=Arial;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="995" y="500" width="280" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="txt6" value="The stored Pending report becomes available in the Moderator queue. This data effect is not a Driver-to-Moderator screen transition." style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=16;fontFamily=Arial;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="30" y="292" width="1270" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="txt7" value="D-06 keeps the same screen for Verify, Reject, Merge, Resolve and Expire. Fault support changes affect later generation/recalculation/manual refresh. Missing reason or concurrent update blocks the decision and leaves D-06 visible." style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=16;fontFamily=Arial;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="30" y="675" width="1270" height="80" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

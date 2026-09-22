@@ -1,0 +1,126 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net">
+  <diagram name="Calculation results and evidence" id="Calculation-results-and-evidence">
+    <mxGraphModel page="1" pageWidth="1320" pageHeight="740" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="version" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="330" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="versionhead" value="«entity»&#10;PlanVersion" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=18;fontStyle=1;fillColor=#EAF0F5;strokeColor=#475569;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="330" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="versionbody" value="versionId; immutable inputs&#10;faultFilterCheckedAt&#10;faultEvidenceRefs?" style="text;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=17;fontFamily=Arial;spacing=0;" vertex="1" parent="1">
+          <mxGeometry x="52" y="104" width="306" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="snapshot" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="890" y="40" width="390" height="195" as="geometry" />
+        </mxCell>
+        <mxCell id="snapshothead" value="«entity»&#10;OfficialSnapshot" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=18;fontStyle=1;fillColor=#EAF0F5;strokeColor=#475569;" vertex="1" parent="1">
+          <mxGeometry x="890" y="40" width="390" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="snapshotbody" value="snapshotId; source&#10;observedAt; retrievedAt&#10;dataState {LIVE, CACHED,&#10;STALE, DEMO_FIXTURE}" style="text;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=17;fontFamily=Arial;spacing=0;" vertex="1" parent="1">
+          <mxGeometry x="902" y="104" width="366" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="route" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="390" width="330" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="routehead" value="«entity»&#10;RouteEstimate" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=18;fontStyle=1;fillColor=#EAF0F5;strokeColor=#475569;" vertex="1" parent="1">
+          <mxGeometry x="40" y="390" width="330" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="routebody" value="routeId; origin; destination&#10;distanceKm; durationMinutes&#10;retrievedAt" style="text;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=17;fontFamily=Arial;spacing=0;" vertex="1" parent="1">
+          <mxGeometry x="52" y="454" width="306" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="rec" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="490" y="340" width="390" height="280" as="geometry" />
+        </mxCell>
+        <mxCell id="rechead" value="«entity»&#10;Recommendation" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=18;fontStyle=1;fillColor=#EAF0F5;strokeColor=#475569;" vertex="1" parent="1">
+          <mxGeometry x="490" y="340" width="390" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="recbody" value="recommendationId; feasibility&#10;arrivalSOC; automaticTargetSOC&#10;requiredEnergyKWh; chargingMinutes&#10;estimatedCost?; detourMinutes&#10;availabilitySummary; explanation&#10;rankBeforeFaultFilter; rank?&#10;shortlistState; filterReason?" style="text;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=17;fontFamily=Arial;spacing=0;" vertex="1" parent="1">
+          <mxGeometry x="502" y="404" width="366" height="210" as="geometry" />
+        </mxCell>
+        <mxCell id="connector" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="390" width="280" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="connectorhead" value="«entity»&#10;Connector" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=18;fontStyle=1;fillColor=#EAF0F5;strokeColor=#475569;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="390" width="280" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="connectorbody" value="connectorId; plugType; currentType&#10;maximumPowerKW; official status&#10;priceType; unitPrice?" style="text;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=17;fontFamily=Arial;spacing=0;" vertex="1" parent="1">
+          <mxGeometry x="1012" y="454" width="256" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="snapshotlink" edge="1" parent="1" style="endArrow=none;strokeColor=#475569;strokeWidth=1.7;rounded=0;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="370" y="130" as="sourcePoint" />
+            <mxPoint x="890" y="130" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="txt1" value="0..*" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=16;fontFamily=Arial;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="385" y="97" width="60" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="txt2" value="1" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=16;fontFamily=Arial;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="844" y="97" width="35" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="txt3" value="uses exact snapshot" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=16;fontFamily=Arial;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="540" y="138" width="220" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="routes" edge="1" parent="1" style="endArrow=none;strokeColor=#475569;strokeWidth=1.7;rounded=0;startArrow=diamond;startFill=1;startSize=14;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="205" y="220" as="sourcePoint" />
+            <mxPoint x="205" y="390" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="txt4" value="1" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=16;fontFamily=Arial;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="215" y="225" width="35" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="txt5" value="1..*" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=16;fontFamily=Arial;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="215" y="350" width="55" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="txt6" value="route legs" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=16;fontFamily=Arial;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="210" y="290" width="110" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="results" edge="1" parent="1" style="endArrow=none;strokeColor=#475569;strokeWidth=1.7;rounded=0;startArrow=diamond;startFill=1;startSize=14;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="370" y="190" as="sourcePoint" />
+            <mxPoint x="490" y="480" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="420" y="190" />
+              <mxPoint x="420" y="480" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="txt7" value="1" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=16;fontFamily=Arial;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="382" y="196" width="30" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="txt8" value="0..*" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=16;fontFamily=Arial;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="432" y="443" width="55" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="txt9" value="results" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=16;fontFamily=Arial;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="372" y="298" width="100" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="connectorlink" edge="1" parent="1" style="endArrow=none;strokeColor=#475569;strokeWidth=1.7;rounded=0;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="880" y="500" as="sourcePoint" />
+            <mxPoint x="1000" y="500" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="txt10" value="0..*" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=16;fontFamily=Arial;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="884" y="466" width="50" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="txt11" value="1" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=16;fontFamily=Arial;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="961" y="466" width="35" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="txt12" value="assesses" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=16;fontFamily=Arial;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="890" y="505" width="100" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="txt13" value="Order of operations&#10;Calculate and rank suggestions → filter Moderator-marked faulty stations → form shortlist.&#10;The next-ranked unmarked candidates fill up to three places when available." style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=16;fontFamily=Arial;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="440" y="40" width="415" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="txt14" value="shortlistState = SURVIVES, FILTERED_FAULT or HARD_EXCLUDED. Zero/one eligible result is explained. RouteEstimate belongs to one version; each Recommendation assesses one Connector." style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=16;fontFamily=Arial;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="390" y="640" width="880" height="75" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

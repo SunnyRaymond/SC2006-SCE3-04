@@ -1,0 +1,44 @@
+[
+  {
+    "section": "usecase",
+    "file": "diagrams/01-use-case-diagram.drawio.png",
+    "title": "1 Complete Use Case Diagram",
+    "caption": "All eight use cases. External Data Providers groups OneMap and LTA DataMall as supporting roles; provider participation includes reconfiguration when route/data work is needed."
+  },
+  {
+    "section": "entity",
+    "file": "diagrams/entity-01-ownership.drawio.png",
+    "title": "2 Class diagram of entity classes Ownership",
+    "caption": "Driver ownership, optional current profile, version composition and mutable version-qualified selection."
+  },
+  {
+    "section": "entity",
+    "file": "diagrams/entity-02-calculation.drawio.png",
+    "title": "2 Class diagram of entity classes Calculation",
+    "caption": "Immutable calculation results, exact provider evidence, route legs and connector assessments. Repeated classes are the same entities across views."
+  },
+  {
+    "section": "entity",
+    "file": "diagrams/entity-03-moderation.drawio.png",
+    "title": "2 Class diagram of entity classes Moderation",
+    "caption": "Physical inventory, issue targets and audit history. The station faulty mark is derived from existing report/decision evidence."
+  },
+  {
+    "section": "boundary",
+    "file": "diagrams/04-boundary-control-classes.drawio.png",
+    "title": "3 Key Boundary and Control Classes",
+    "caption": "Representative boundary\u2013control\u2013entity collaborations. The complete object and attribute catalogue follows the diagrams."
+  },
+  {
+    "section": "dialog",
+    "file": "diagrams/05-state-machine-driver.drawio.png",
+    "title": "4 Initial Dialog Map Driver Journey",
+    "caption": "Nodes are UI states. M-01 and M-02 share the logical states of D-02 and D-03; validation and manual refresh are UI state transitions."
+  },
+  {
+    "section": "dialog",
+    "file": "diagrams/06-state-machine-reports-moderation.drawio.png",
+    "title": "4 Initial Dialog Map Reporting and Moderation",
+    "caption": "Driver and Moderator journeys are separated by role. Report lifecycle changes appear as variants of the report/review UI, not as screen transfers between users."
+  }
+]

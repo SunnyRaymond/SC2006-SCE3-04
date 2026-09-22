@@ -1,0 +1,160 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net">
+  <diagram name="Station inventory and moderation" id="Station-inventory-and-moderation">
+    <mxGraphModel page="1" pageWidth="1320" pageHeight="740" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="station" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="420" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="stationhead" value="«entity»&#10;ChargingStation" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=18;fontStyle=1;fillColor=#EAF0F5;strokeColor=#475569;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="420" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="stationbody" value="stationId; name; address&#10;latitude; longitude; operator&#10;operatingHours; /isFaultyAt(t)" style="text;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=17;fontFamily=Arial;spacing=0;" vertex="1" parent="1">
+          <mxGeometry x="52" y="104" width="396" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="report" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="800" y="40" width="480" height="210" as="geometry" />
+        </mxCell>
+        <mxCell id="reporthead" value="«entity»&#10;IssueReport" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=18;fontStyle=1;fillColor=#EAF0F5;strokeColor=#475569;" vertex="1" parent="1">
+          <mxGeometry x="800" y="40" width="480" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="reportbody" value="reportId; category; note; imageReference?&#10;status; createdAt; expiresAt&#10;/faultSupportAt(t)&#10;station target; optional connector target" style="text;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=17;fontFamily=Arial;spacing=0;" vertex="1" parent="1">
+          <mxGeometry x="812" y="104" width="456" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="connector" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="440" width="380" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="connectorhead" value="«entity»&#10;Connector" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=18;fontStyle=1;fillColor=#EAF0F5;strokeColor=#475569;" vertex="1" parent="1">
+          <mxGeometry x="40" y="440" width="380" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="connectorbody" value="connectorId; plugType; currentType&#10;maximumPowerKW; official status&#10;priceType; unitPrice?" style="text;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=17;fontFamily=Arial;spacing=0;" vertex="1" parent="1">
+          <mxGeometry x="52" y="504" width="356" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="decision" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="800" y="440" width="480" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="decisionhead" value="«entity»&#10;ModerationDecision" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=18;fontStyle=1;fillColor=#EAF0F5;strokeColor=#475569;" vertex="1" parent="1">
+          <mxGeometry x="800" y="440" width="480" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="decisionbody" value="decisionId; action; reason&#10;createdAt; resultingStatus" style="text;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=17;fontFamily=Arial;spacing=0;" vertex="1" parent="1">
+          <mxGeometry x="812" y="504" width="456" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="user" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="490" y="440" width="250" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="userhead" value="«entity»&#10;User" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=18;fontStyle=1;fillColor=#EAF0F5;strokeColor=#475569;" vertex="1" parent="1">
+          <mxGeometry x="490" y="440" width="250" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="userbody" value="userId; role" style="text;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=17;fontFamily=Arial;spacing=0;" vertex="1" parent="1">
+          <mxGeometry x="502" y="504" width="226" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="inventory" edge="1" parent="1" style="endArrow=none;strokeColor=#475569;strokeWidth=1.7;rounded=0;startArrow=diamond;startFill=0;startSize=14;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="225" y="230" as="sourcePoint" />
+            <mxPoint x="225" y="440" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="txt1" value="1" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=16;fontFamily=Arial;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="235" y="240" width="35" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="txt2" value="1..*" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=16;fontFamily=Arial;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="235" y="400" width="55" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="txt3" value="contains" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=16;fontFamily=Arial;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="240" y="320" width="110" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="stationreports" edge="1" parent="1" style="endArrow=none;strokeColor=#475569;strokeWidth=1.7;rounded=0;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="460" y="140" as="sourcePoint" />
+            <mxPoint x="800" y="140" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="txt4" value="1" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=16;fontFamily=Arial;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="466" y="106" width="35" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="txt5" value="0..*" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=16;fontFamily=Arial;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="740" y="106" width="55" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="txt6" value="reports" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=16;fontFamily=Arial;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="550" y="147" width="160" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="target" edge="1" parent="1" style="endArrow=none;strokeColor=#475569;strokeWidth=1.7;rounded=0;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="420" y="530" as="sourcePoint" />
+            <mxPoint x="800" y="210" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="450" y="530" />
+              <mxPoint x="450" y="290" />
+              <mxPoint x="760" y="290" />
+              <mxPoint x="760" y="210" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="txt7" value="0..1" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=16;fontFamily=Arial;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="425" y="540" width="48" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="txt8" value="0..*" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=16;fontFamily=Arial;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="738" y="216" width="55" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="txt9" value="optional connector target" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=16;fontFamily=Arial;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="490" y="261" width="245" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="audit" edge="1" parent="1" style="endArrow=none;strokeColor=#475569;strokeWidth=1.7;rounded=0;startArrow=diamond;startFill=1;startSize=14;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1050" y="250" as="sourcePoint" />
+            <mxPoint x="1050" y="440" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="txt10" value="1" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=16;fontFamily=Arial;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="260" width="35" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="txt11" value="0..*" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=16;fontFamily=Arial;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="402" width="55" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="txt12" value="audit history" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=16;fontFamily=Arial;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="332" width="175" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="reporter" edge="1" parent="1" style="endArrow=none;strokeColor=#475569;strokeWidth=1.7;rounded=0;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="610" y="440" as="sourcePoint" />
+            <mxPoint x="800" y="180" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="610" y="370" />
+              <mxPoint x="780" y="370" />
+              <mxPoint x="780" y="180" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="txt13" value="1" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=16;fontFamily=Arial;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="615" y="405" width="35" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="txt14" value="0..*" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=16;fontFamily=Arial;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="735" y="145" width="55" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="txt15" value="reporter {Driver}" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=16;fontFamily=Arial;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="605" y="374" width="175" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="moderator" edge="1" parent="1" style="endArrow=none;strokeColor=#475569;strokeWidth=1.7;rounded=0;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="740" y="525" as="sourcePoint" />
+            <mxPoint x="800" y="525" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="txt16" value="1" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=16;fontFamily=Arial;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="743" y="490" width="30" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="txt17" value="0..*" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=16;fontFamily=Arial;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="752" y="532" width="43" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="txt18" value="actor {Moderator}" style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=16;fontFamily=Arial;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="515" y="600" width="240" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="txt19" value="/isFaultyAt(t) is derived from at least one VERIFIED, unexpired faulty report. A connector report affects its parent station. Pending/non-fault reports never exclude. Resolve/expiry removes only that report’s support; merge retains canonical support." style="text;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=16;fontFamily=Arial;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="40" y="655" width="1240" height="70" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

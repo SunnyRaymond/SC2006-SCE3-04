@@ -1,0 +1,285 @@
+[
+  {
+    "id": "UC-01",
+    "name": "Access Account",
+    "actor": "Driver or Moderator",
+    "priority": "High",
+    "frequency": "At the start of an authenticated session",
+    "description": "A new Driver registers, or an existing Driver or Moderator signs in and reaches the role-appropriate workspace.",
+    "pre": [
+      "The user can access the PlugPlan SG web application.",
+      "For sign-in, an active account exists."
+    ],
+    "post": [
+      "An authenticated session contains the user's role.",
+      "The user is directed to the appropriate Driver or Moderator workspace."
+    ],
+    "flow": [
+      "The user opens the account access screen.",
+      "The user enters an email address and password.",
+      "The system validates the credentials.",
+      "The system creates an authenticated session containing the user's role.",
+      "The system displays the role-appropriate workspace."
+    ],
+    "alts": [
+      "UC-01.AC.1 - A new Driver selects Create a Driver account, enters a unique email and compliant password, and the system creates the account before continuing at step 4.",
+      "UC-01.AC.2 - A signed-in user ends the session; the system invalidates the session and returns to the access screen."
+    ],
+    "exceptions": [
+      "UC-01.EX.1 - If credentials are invalid, the system displays a generic error and does not reveal whether the email exists.",
+      "UC-01.EX.2 - If the account is inactive, the system denies access and provides a support instruction."
+    ],
+    "special": "NFR-05 and NFR-06 apply.",
+    "assumptions": "Moderator accounts are provisioned by the team; public registration creates Driver accounts only.",
+    "trace": "FR-01, FR-02; D-00"
+  },
+  {
+    "id": "UC-02",
+    "name": "Manage EV Profile",
+    "actor": "Driver",
+    "priority": "High",
+    "frequency": "Initial setup and occasional updates",
+    "description": "The Driver records validated vehicle and planning assumptions used by subsequent charging plans.",
+    "pre": [
+      "The Driver is authenticated."
+    ],
+    "post": [
+      "The valid EV Profile is stored.",
+      "Existing Plan Versions retain their original assumptions."
+    ],
+    "flow": [
+      "The Driver opens Vehicle Profile and Preferences.",
+      "The system displays the current values or an empty form.",
+      "The Driver enters vehicle capacity, consumption, plug types, charging limits, reserve, and planning preferences.",
+      "The Driver selects Save Profile.",
+      "The system validates the values and stores the profile.",
+      "The system confirms that the profile was saved."
+    ],
+    "alts": [
+      "UC-02.AC.1 - The Driver edits an existing profile; future Plan Versions use the new values.",
+      "UC-02.AC.2 - The Driver deletes the profile after confirming the destructive action."
+    ],
+    "exceptions": [
+      "UC-02.EX.1 - Missing or out-of-range values are rejected with field-specific messages.",
+      "UC-02.EX.2 - If storage fails, the system keeps the entered values and displays a retry instruction."
+    ],
+    "special": "Values must show units and must be described as planning assumptions.",
+    "assumptions": "The MVP permits at most one EV Profile per Driver; a valid profile is required before planning. Zero profiles is the state before creation or after deletion.",
+    "trace": "FR-03, FR-04; D-01"
+  },
+  {
+    "id": "UC-03",
+    "name": "Create Charging Plan",
+    "actor": "Driver; supporting actors: OneMap and LTA DataMall",
+    "priority": "High",
+    "frequency": "Several times per week per active Driver",
+    "description": "The Driver submits journey inputs and receives a saved Plan Version containing ranked, explained charging recommendations.",
+    "pre": [
+      "The Driver is authenticated.",
+      "A valid EV Profile exists."
+    ],
+    "post": [
+      "A new Charging Plan and Plan Version are stored.",
+      "Feasible recommendations or an explicit no-feasible-option result is displayed."
+    ],
+    "flow": [
+      "The Driver enters origin, destination, current SOC, departure time, maximum charging duration, maximum detour, and target choice.",
+      "The system resolves the places and obtains route distance and duration from OneMap.",
+      "The system obtains the latest usable station and connector snapshot through the LTA DataMall adapter.",
+      "The system calculates reachability, compatibility, arrival SOC, target SOC, required energy, charging time, cost, and dwell fit.",
+      "The system excludes infeasible candidates and ranks the remaining candidates using the selected fixed strategy.",
+      "After the algorithm generates ranked suggestions, the system removes stations with an active Moderator faulty mark, takes up to three surviving recommendations, and stores and displays the Plan Version with explanations, timestamps, and data-state labels."
+    ],
+    "alts": [
+      "UC-03.AC.1 - The Driver selects a valid manual target; the system uses it while continuing to show the automatic target.",
+      "UC-03.AC.2 - The Driver already has enough energy; the system offers continuation without a charging stop.",
+      "UC-03.AC.3 - No candidate is feasible; the system explains the reasons and offers editable inputs.",
+      "UC-03.AC.4 - If filtering leaves one option, show that option and disable comparison; if none remain, explain that no eligible option remains. Fill a shortlist from the next-ranked unmarked candidates when available."
+    ],
+    "exceptions": [
+      "UC-03.EX.1 - An ambiguous place requires Driver selection before route calculation.",
+      "UC-03.EX.2 - If no usable route is available, the system preserves the inputs and displays an explicit failure.",
+      "UC-03.EX.3 - If live charging data fails, the system may use a labeled cached or Demo Fixture snapshot."
+    ],
+    "special": "NFR-01 to NFR-04 apply. A result is an estimate, not a reservation or guarantee.",
+    "assumptions": "Reserve is 20%, charging efficiency is 90%, and targets above 80% show a taper warning.",
+    "trace": "FR-05 to FR-19; D-02, D-03; FR-24 refinement"
+  },
+  {
+    "id": "UC-04",
+    "name": "Review and Compare Recommendations",
+    "actor": "Driver",
+    "priority": "High",
+    "frequency": "After each successful plan calculation",
+    "description": "The Driver inspects recommendation evidence and compares two or three alternatives using a consistent metric order.",
+    "pre": [
+      "The Driver is authenticated and owns the displayed plan.",
+      "A Plan Version exists; at least two eligible recommendations are required for the comparison branch."
+    ],
+    "post": [
+      "The Driver understands the trade-offs and may select one recommendation."
+    ],
+    "flow": [
+      "The system displays ranked recommendation cards and the selected strategy.",
+      "The Driver reviews availability, detour, arrival SOC, target SOC, required energy, time, cost, freshness, issues, and explanation.",
+      "The Driver selects two or three recommendations for comparison.",
+      "The system displays the selected recommendations side by side using the same metric order.",
+      "The Driver reviews scoring factors, missing data, and exclusions.",
+      "The Driver selects a preferred recommendation or returns without selecting one."
+    ],
+    "alts": [
+      "UC-04.AC.1 - The Driver changes the fixed ranking strategy through UC-05; a new Plan Version explains the changed order.",
+      "UC-04.AC.2 - A price is missing; the system displays Price unavailable and does not label that option cheapest."
+    ],
+    "exceptions": [
+      "UC-04.EX.1 - If fewer than two feasible choices remain, comparison is unavailable and the system explains why."
+    ],
+    "special": "Official data, PlugPlan estimates, and community reports must be visually distinguished.",
+    "assumptions": "A maximum of three options can be compared at once.",
+    "trace": "FR-18 to FR-20; D-03, D-04"
+  },
+  {
+    "id": "UC-05",
+    "name": "Reconfigure Charging Plan",
+    "actor": "Driver",
+    "priority": "High",
+    "frequency": "As needed before selecting a charger",
+    "description": "The Driver changes a plan input or strategy and receives a new immutable Plan Version.",
+    "pre": [
+      "An existing Charging Plan has at least one Plan Version.",
+      "The Driver is authenticated and owns the plan."
+    ],
+    "post": [
+      "A new Plan Version is stored.",
+      "The previous Plan Version remains unchanged and accessible."
+    ],
+    "flow": [
+      "The Driver opens Compare and Reconfigure for an existing plan.",
+      "The system displays current timing, dwell, reserve, target, detour, and strategy values.",
+      "The Driver changes one or more values.",
+      "The Driver selects Recalculate.",
+      "The system repeats feasibility and ranking using the new values, then filters stations with active Moderator faulty marks before forming the new shortlist.",
+      "The system stores and displays the new Plan Version with an explanation of material ranking changes."
+    ],
+    "alts": [
+      "UC-05.AC.1 - The Driver resets the pending changes and keeps the current Plan Version.",
+      "UC-05.AC.2 - A previously feasible option becomes infeasible and is labeled accordingly."
+    ],
+    "exceptions": [
+      "UC-05.EX.1 - If route refresh fails, the previous Plan Version remains visible and no partial version is stored.",
+      "UC-05.EX.2 - Leaving with unsaved changes requires confirmation."
+    ],
+    "special": "Plan Version immutability supports traceability.",
+    "assumptions": "Reconfiguration is user-initiated; continuous background recalculation is outside scope.",
+    "trace": "FR-05, FR-14, FR-18, FR-21; D-04; FR-24 refinement"
+  },
+  {
+    "id": "UC-06",
+    "name": "Refresh Plan and Select Fallback",
+    "actor": "Driver; supporting actors: OneMap and LTA DataMall",
+    "priority": "High",
+    "frequency": "Immediately before travel or after a visible data-age warning",
+    "description": "The Driver manually requests newer data and reviews a fallback when the selected connector is no longer feasible.",
+    "pre": [
+      "A saved Plan Version exists.",
+      "The Driver is authenticated.",
+      "The saved plan belongs to the authenticated Driver."
+    ],
+    "post": [
+      "A refresh result is stored as a new Plan Version.",
+      "The prior selection remains or a fallback result is clearly presented."
+    ],
+    "flow": [
+      "The Driver selects Refresh Data on a saved plan.",
+      "The system requests the latest usable route and charging snapshot through its backend adapters.",
+      "The system recalculates feasibility and ranking using existing inputs, then filters stations with active Moderator faulty marks before forming the refreshed shortlist.",
+      "The system compares the refreshed result with the previous Plan Version.",
+      "If the selected connector is unsuitable or its station is marked faulty, the system explains the change and identifies the next-ranked feasible, unmarked option.",
+      "The Driver keeps the original selection when still feasible, selects the fallback, or edits the plan."
+    ],
+    "alts": [
+      "UC-06.AC.1 - The original selection remains feasible; the system confirms that no fallback is required.",
+      "UC-06.AC.2 - No feasible fallback exists; the system provides reasons and editable inputs.",
+      "UC-06.AC.3 - Only cached or stale data is available; the system labels the state and age."
+    ],
+    "exceptions": [
+      "UC-06.EX.1 - If no usable snapshot is available, the system displays a failure and keeps the previous Plan Version unchanged."
+    ],
+    "special": "Refresh is manual. The system must not promise automatic alerts or guaranteed availability.",
+    "assumptions": "The latest usable snapshot can be live, cached, stale, or a clearly labeled Demo Fixture.",
+    "trace": "FR-07 to FR-19, FR-22, FR-23; D-03, D-04; FR-24 refinement"
+  },
+  {
+    "id": "UC-07",
+    "name": "Submit Charger Issue",
+    "actor": "Driver",
+    "priority": "Medium",
+    "frequency": "Occasionally after observing a site problem",
+    "description": "The Driver submits a categorized, expiring community report associated with a station or connector.",
+    "pre": [
+      "The Driver is authenticated.",
+      "A Charging Station or Connector is selected."
+    ],
+    "post": [
+      "A Pending Issue Report is stored with an expiry time.",
+      "The Driver receives a report reference.",
+      "The report is available in the Moderator review workspace; the Driver receives a Pending acknowledgement. Submission alone does not exclude a station."
+    ],
+    "flow": [
+      "The Driver selects Report an Issue for a station or connector.",
+      "The system pre-fills the station and connector context.",
+      "The Driver selects a category, enters a note, and optionally adds an image.",
+      "The system validates the input and checks for a similar active report.",
+      "The Driver confirms submission.",
+      "The system stores a Pending report, sets its expiry, and displays the reference."
+    ],
+    "alts": [
+      "UC-07.AC.1 - A similar report exists; the Driver views it instead of submitting a duplicate.",
+      "UC-07.AC.2 - The Driver opens the operator's official reporting channel for repair or enforcement."
+    ],
+    "exceptions": [
+      "UC-07.EX.1 - An invalid or oversized image is rejected without discarding other inputs.",
+      "UC-07.EX.2 - If the submission rate limit is exceeded, the system displays when another report may be submitted."
+    ],
+    "special": "Images must include a privacy reminder. Community reports must not look like official status. Moderator-confirmed faulty status is made useful to other Drivers by excluding that station after suggestion generation and before display, through UC-03, UC-05 and UC-06. No new public report feed is required.",
+    "assumptions": "Default report expiry is 24 hours unless moderated earlier.",
+    "trace": "FR-24; D-05"
+  },
+  {
+    "id": "UC-08",
+    "name": "Moderate Charger Reports",
+    "actor": "Moderator",
+    "priority": "Medium",
+    "frequency": "Daily during the prototype demonstration period",
+    "description": "A Moderator reviews community evidence and records a justified report-lifecycle decision.",
+    "pre": [
+      "The Moderator is authenticated.",
+      "At least one Issue Report exists."
+    ],
+    "post": [
+      "A valid Moderation Decision is appended to the audit history.",
+      "The Issue Report status reflects the decision.",
+      "A verified fault can mark its station faulty; the mark is used by subsequent generation, recalculation and manual refresh."
+    ],
+    "flow": [
+      "The Moderator opens the restricted report queue and selects a report.",
+      "The system displays the report, evidence, related reports, current official connector status, and audit history.",
+      "The Moderator reviews the provenance and enters a decision reason.",
+      "The Moderator selects Verify, Reject, Merge, Resolve, or Expire.",
+      "The system requests confirmation for destructive or consolidating actions.",
+      "The system records the actor, action, reason, timestamp and resulting status; verification of a fault activates the station faulty mark, while resolution or expiry removes that report as support for the mark."
+    ],
+    "alts": [
+      "UC-08.AC.1 - Evidence is inconclusive; the Moderator keeps the report Pending.",
+      "UC-08.AC.2 - An official status supersedes the report; the Moderator resolves it with that reason.",
+      "UC-08.AC.3 - The Moderator selects a valid target report and merges a duplicate."
+    ],
+    "exceptions": [
+      "UC-08.EX.1 - If another Moderator changed the report, the system rejects the stale update and requests a refresh.",
+      "UC-08.EX.2 - A missing decision reason prevents submission."
+    ],
+    "special": "NFR-06 applies to every moderation operation.",
+    "assumptions": "No appeal workflow is included in the MVP. A non-fault report does not create a faulty mark. A station stays marked while at least one verified, unexpired fault report supports it; a merge preserves the valid target report and does not create duplicate support. Pending, rejected, resolved and expired reports do not cause exclusion.",
+    "trace": "FR-02, FR-25; D-06; FR-24 refinement"
+  }
+]
