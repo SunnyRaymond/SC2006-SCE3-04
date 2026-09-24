@@ -77,14 +77,14 @@ def moderation():
     v.cls('station','ChargingStation',['stationId; name; address','latitude; longitude; operator','operatingHours; /isFaultyAt(t)'],40,40,420,190)
     v.cls('report','IssueReport',['reportId; category; note; imageReference?','status; createdAt; expiresAt','/faultSupportAt(t)','station target; optional connector target'],800,40,480,210)
     v.cls('connector','Connector',['connectorId; plugType; currentType','maximumPowerKW; official status','priceType; unitPrice?'],40,440,380,190)
-    v.cls('decision','ModerationDecision',['decisionId; action; reason','createdAt; resultingStatus'],800,440,480,170)
-    v.cls('user','User',['userId; role'],490,440,250,150)
+    v.cls('decision','ModerationDecision',['decisionId; action; reason','createdAt; resultingStatus'],820,440,460,170)
+    v.cls('user','User',['userId; role'],480,440,190,150)
     v.edge('inventory',[(225,230),(225,440)],'aggregation'); v.txt('1',235,240,35); v.txt('1..*',235,400,55); v.txt('contains',240,320,110)
     v.edge('stationreports',[(460,140),(800,140)]); v.txt('1',466,106,35); v.txt('0..*',740,106,55); v.txt('reports',550,147,160)
-    v.edge('target',[(420,530),(450,530),(450,290),(760,290),(760,210),(800,210)]); v.txt('0..1',425,540,48); v.txt('0..*',738,216,55); v.txt('optional connector target',490,261,245,26)
+    v.edge('target',[(420,530),(445,530),(445,290),(760,290),(760,210),(800,210)]); v.txt('0..1',430,540,45); v.txt('0..*',738,216,55); v.txt('optional connector target',490,261,245,26)
     v.edge('audit',[(1050,250),(1050,440)],'composition'); v.txt('1',1060,260,35); v.txt('0..*',1060,402,55); v.txt('audit history',1060,332,175)
     v.edge('reporter',[(610,440),(610,370),(780,370),(780,180),(800,180)]); v.txt('1',615,405,35); v.txt('0..*',735,145,55); v.txt('reporter {Driver}',605,374,175,26)
-    v.edge('moderator',[(740,525),(800,525)]); v.txt('1',743,490,30); v.txt('0..*',752,532,43); v.txt('actor {Moderator}',515,600,240,35)
+    v.edge('moderator',[(670,525),(820,525)]); v.txt('1',675,535,30); v.txt('0..*',770,535,43); v.txt('actor {Moderator}',673,490,145,30)
     v.txt('/isFaultyAt(t) is derived from at least one VERIFIED, unexpired faulty report. A connector report affects its parent station. Pending/non-fault reports never exclude. Resolve/expiry removes only that report’s support; merge retains canonical support.',40,655,1240,70)
     return v
 
