@@ -1,0 +1,30 @@
+# Local credentials
+credentials.env
+.env
+.env.*
+*.env
+!.env.example
+!credentials.env.example
+
+# Dependencies and generated application files
+node_modules/
+.next/
+out/
+dist/
+build/
+coverage/
+playwright-report/
+test-results/
+.vercel/
+.supabase/
+*.tsbuildinfo
+next-env.d.ts
+
+# Local logs and operating-system files
+*.log
+.DS_Store
+Thumbs.db
+.cache/
+tmp/
+.local/
+
