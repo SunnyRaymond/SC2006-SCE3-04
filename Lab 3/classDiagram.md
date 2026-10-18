@@ -1,3 +1,4 @@
+```mermaid
 classDiagram
     %% ===== PRESENTATION LAYER =====
     class PlugPlanApp {
@@ -9,7 +10,7 @@ classDiagram
         -profileDraft: VehicleProfile
         -currentPlanId: string
         -activeVersionId: string
-        -compareIds: string[]
+        -compareIds: List
         +navigate(view)
         +submitPlan(e)
         +refreshPlan()
@@ -20,7 +21,7 @@ classDiagram
         +logout()
     }
     class AuthScreen {
-        -mode: signin|signup
+        -mode: signin
         -email: string
         -password: string
         +socialSignIn(provider)
@@ -28,13 +29,13 @@ classDiagram
     }
     class PlacePicker {
         -query: string
-        -places: Place[]
+        -places: List
         -active: number
         +choose(place)
     }
     class JourneyMap {
         -map: L.Map
-        -layer: L.LayerGroup
+        -layer: LayerGroup
         +render(origin, destination, recommendations)
     }
     class Modal {
@@ -48,7 +49,7 @@ classDiagram
 
     %% ===== CLIENT API LAYER =====
     class ApiClient {
-        +api~T~(action, payload) T
+        +api(action, payload)
         +formatSG(value) string
         +localSG(value) string
         +currency(value) string
@@ -98,7 +99,7 @@ classDiagram
         -CHARGING_EFFICIENCY: number
         -BALANCED_WEIGHTS: object
         +calculatePlan(params) PlanResult
-        -assignScores(candidates, strategy) RankedCandidate[]
+        -assignScores(candidates, strategy) List
         -compareCandidates(a, b, strategy) number
         -failureForStation(...) result
         -estimateCost(connector, kWh, min) number
@@ -119,13 +120,13 @@ classDiagram
         +createDemoScenario(input, profile) scenario
     }
     class PolylineDecoder {
-        +decodePolyline(encoded) [number,number][]
+        +decodePolyline(encoded) List
     }
 
     %% ===== PROVIDER LAYER =====
     class ProviderGateway {
         +createProviderDeadline(fetch, budget) Deadline
-        +searchPlaces(query, mode, deadline) Place[]
+        +searchPlaces(query, mode, deadline) List
         +getLiveSnapshot(origin, dest, deadline) snapshot
         +getRoutes(origin, dest, stations, profile, deadline) routes
         +formatCachedOfficialStatus(...) string
@@ -138,7 +139,7 @@ classDiagram
     }
     class Deadline {
         +at: number
-        +fetch: typeof fetch
+        +fetch: function
     }
 
     %% ===== PERSISTENCE LAYER =====
@@ -146,18 +147,18 @@ classDiagram
         +getProfile(context) VehicleProfile
         +saveProfile(context, profile) VehicleProfile
         +deleteProfile(context) void
-        +listPlans(context) SavedPlan[]
+        +listPlans(context) List
         +getOwnedPlan(context, planId) SavedPlan
         +savePlanVersion(context, planId, result, reason) SavedPlan
         +selectRecommendation(context, planId, recId) SavedPlan
         +deletePlan(context, planId) void
     }
     class ReportRepository {
-        +listReports(context) IssueReport[]
+        +listReports(context) List
         +getReport(context, reportId) IssueReport
         +submitReport(context, input) result
         +moderateReport(context, input) IssueReport
-        +getActiveFaults(context) FaultEvidence[]
+        +getActiveFaults(context) List
         +createImageUrl(context, reportId) string
     }
     class BootstrapRepository {
@@ -165,7 +166,7 @@ classDiagram
         +revokeSession(context) void
     }
 
-    %% ===== DOMAIN TYPES (data classes) =====
+    %% ===== DOMAIN TYPES =====
     class AppUser {
         +id: string
         +email: string
@@ -176,7 +177,7 @@ classDiagram
         +name: string
         +capacityKWh: number
         +consumptionKWhPer100Km: number
-        +plugTypes: string[]
+        +plugTypes: List
         +maxAcKw: number
         +maxDcKw: number
         +reserveSoc: number
@@ -210,12 +211,12 @@ classDiagram
         +lng: number
         +operator: string
         +openingHours: string
-        +connectors: Connector[]
+        +connectors: List
     }
     class Connector {
         +id: string
         +plugType: string
-        +powerType: AC|DC
+        +powerType: string
         +powerKw: number
         +price: number
         +priceType: priceType
@@ -226,7 +227,7 @@ classDiagram
         +state: DataState
         +observedAt: string
         +retrievedAt: string
-        +stations: Station[]
+        +stations: List
     }
     class RouteEstimate {
         +distanceKm: number
@@ -253,18 +254,18 @@ classDiagram
         +availability: number
         +score: number
         +rank: number
-        +explanations: string[]
-        +warnings: string[]
+        +explanations: List
+        +warnings: List
     }
     class PlanResult {
         +inputs: PlanInput
         +profileAssumptions: VehicleProfile
-        +recommendations: Recommendation[]
-        +excluded: Exclusion[]
+        +recommendations: List
+        +excluded: List
         +noChargeNeeded: boolean
         +directRoute: RouteEstimate
         +snapshot: snapshotInfo
-        +faultEvidence: FaultEvidence[]
+        +faultEvidence: List
         +summary: string
     }
     class SavedPlan {
@@ -273,7 +274,7 @@ classDiagram
         +createdAt: string
         +selectedRecommendationId: string
         +currentVersionId: string
-        +versions: PlanVersion[]
+        +versions: List
     }
     class PlanVersion {
         +id: string
@@ -294,7 +295,7 @@ classDiagram
         +imagePath: string
         +expiresAt: string
         +revision: number
-        +decisions: ModerationDecision[]
+        +decisions: List
         +officialStatus: string
     }
     class ModerationDecision {
@@ -308,8 +309,8 @@ classDiagram
     class AppBootstrap {
         +user: AppUser
         +profile: VehicleProfile
-        +plans: SavedPlan[]
-        +reports: IssueReport[]
+        +plans: List
+        +reports: List
     }
 
     %% ===== RELATIONSHIPS =====
@@ -318,7 +319,7 @@ classDiagram
     PlugPlanApp --> JourneyMap : uses
     PlugPlanApp --> Modal : uses
     PlugPlanApp ..> ApiClient : calls
-    PlugPlanApp ..> SupabaseClient : auth/storage
+    PlugPlanApp ..> SupabaseClient : auth
 
     ApiClient --> ApiError : throws
     ApiClient ..> RouteHandler : POST /api/app
@@ -331,13 +332,13 @@ classDiagram
     ServiceHandler --> PlanRepository : persist
     ServiceHandler --> ReportRepository : persist
     ServiceHandler --> BootstrapRepository : load
-    ServiceHandler --> ProviderGateway : fetch live/demo
+    ServiceHandler --> ProviderGateway : fetch
     ServiceHandler --> ValidationSchemas : validates
     ServiceHandler --> DemoFixtures : demo mode
     ServiceHandler --> AuthGuard : role check
 
     ProviderGateway --> Deadline : uses
-    ProviderGateway --> ProviderCache : reads/writes
+    ProviderGateway --> ProviderCache : reads
 
     PlanEngine --> PlanInput
     PlanEngine --> VehicleProfile
@@ -347,15 +348,15 @@ classDiagram
     PlanEngine --> PlanResult
     PlanEngine --> Recommendation : creates
 
-    PlanResult "1" *-- "many" Recommendation
-    PlanResult "1" *-- "many" Exclusion
-    SavedPlan "1" *-- "many" PlanVersion
-    PlanVersion "1" *-- "1" PlanResult
-    IssueReport "1" *-- "many" ModerationDecision
-    Station "1" *-- "many" Connector
-    OfficialSnapshot "1" *-- "many" Station
-    CandidateRoute "1" *-- "2" RouteEstimate
-    Recommendation --> RouteEstimate : toStation/fromStation
+    PlanResult *-- Recommendation : contains
+    PlanResult *-- Exclusion : contains
+    SavedPlan *-- PlanVersion : contains
+    PlanVersion *-- PlanResult : has
+    IssueReport *-- ModerationDecision : has
+    Station *-- Connector : has
+    OfficialSnapshot *-- Station : contains
+    CandidateRoute *-- RouteEstimate : has
+    Recommendation --> RouteEstimate : toStation
 
     AppBootstrap --> AppUser
     AppBootstrap --> VehicleProfile
@@ -365,7 +366,8 @@ classDiagram
     RequestContext --> AppUser
     RequestContext --> SupabaseClient
 
-    JourneyMap ..> PolylineDecoder : decodes geometry
+    JourneyMap ..> PolylineDecoder : decodes
     DemoFixtures ..> OfficialSnapshot
     DemoFixtures ..> CandidateRoute
     DemoFixtures ..> VehicleProfile
+```
