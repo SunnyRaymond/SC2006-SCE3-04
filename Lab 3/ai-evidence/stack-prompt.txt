@@ -1,0 +1,8 @@
+You are advising SC2006 Team SCE3-04 on PlugPlan SG. Read these supplied materials:
+D:/Downloads/SC2006-SCE3-04/Lab 3/ai-evidence/system-description.md
+D:/Downloads/SC2006-SCE3-04/Lab 3/classDiagram.md
+D:/Downloads/SC2006-SCE3-04/Lab 3/systemArchitecture.md
+
+Recommend a technology stack appropriate for a small student team. Our preferences are TypeScript, React with Next.js, and Supabase for authentication, PostgreSQL and private image storage. Explain how your choices support the design's boundary/control modules, immutable Plan Versions, government-data adapters, role-restricted moderation and rank-then-filter fault handling. Keep the recommendation-only scope and manual refresh. Identify any unnecessary complexity and suggest a simpler approach where appropriate.
+
+Write a concise original response in English, about 200-250 words. Include at least one technology that is not a programming language. Verify technology capability claims using primary official documentation and include two or three source URLs. Save your complete response verbatim to D:/Downloads/SC2006-SCE3-04/Lab 3/ai-evidence/stack-response.md and return the identical text. Do not edit the supplied inputs or write the team's evaluation.

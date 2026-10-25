@@ -2,7 +2,7 @@
 
 ## 1. Architectural style
 
-PlugPlan SG uses a **layered client–server architecture** with five layers. Each layer calls only the layer below it.
+PlugPlan SG uses a **layered client–server architecture** with five responsibility areas. The server coordinates domain and integration work, while the browser also calls Supabase Auth and Storage directly and requests OneMap map tiles; this implementation therefore has explicit cross-layer service paths.
 
 | Layer | Responsibility | Code |
 |---|---|---|
@@ -17,82 +17,50 @@ PlugPlan SG uses a **layered client–server architecture** with five layers. Ea
 ## 2. Layered architecture diagram
 
 ```mermaid
+---
+config:
+  layout: elk
+---
 flowchart TB
-    subgraph P["Presentation layer (browser)"]
-        direction LR
-        UI["PlugPlanApp<br/>views: plan · vehicle · saved · results<br/>compare · reports · moderator"]
-        AUTHUI["AuthScreen"]
-        MAP["JourneyMap<br/>(Leaflet + OneMap tiles)"]
-        PICK["PlacePicker"]
-        APIC["ApiClient<br/>api(action, payload)"]
-        SBC["Supabase JS client<br/>(Auth session, Storage upload)"]
+    subgraph Browser["Presentation - browser"]
+        UI["PlugPlanApp, AuthScreen<br/>PlacePicker and JourneyMap"]
+        CLIENT["ApiClient and Supabase JS client"]
     end
-
-    subgraph A["Application / Control layer (Next.js route handler, Node.js runtime)"]
-        direction LR
-        RH["RouteHandler<br/>POST /api/app<br/>JSON + 1 MiB limit"]
-        AG["AuthGuard<br/>requireUser / requireDriver / requireModerator"]
-        SH["ServiceHandler<br/>handleAction(): action dispatch"]
-        EM["ErrorMapper<br/>ApiError → HTTP status"]
-        RC["RouteCache<br/>(in-memory, 5–10 min TTL)"]
-        HC["GET /api/health"]
+    subgraph Server["Application / Control - Next.js Node server"]
+        API["RouteHandler and AuthGuard<br/>identity, session and role gates"]
+        SERVICE["ServiceHandler<br/>validate and coordinate use cases"]
     end
-
-    subgraph D["Domain layer (pure, no I/O)"]
-        direction LR
-        PE["PlanEngine<br/>calculatePlan()"]
-        VS["ValidationSchemas<br/>(zod)"]
-        DF["DemoFixtures"]
+    subgraph Domain["Domain - pure TypeScript"]
+        ENGINE["PlanEngine<br/>feasibility, estimates, rank then fault filter"]
+        SCHEMAS["ValidationSchemas and DemoFixtures"]
     end
-
-    subgraph I["Integration / Data-access layer"]
-        direction LR
-        PR["PlanRepository"]
-        RR["ReportRepository"]
-        BR["BootstrapRepository"]
-        PG["ProviderGateway<br/>Deadline ≈ 3.9 s"]
-        PC["ProviderCache<br/>.cache/lta-public.json"]
+    subgraph Integration["Integration / Data access"]
+        REPO["Profile / Plan / Report / Bootstrap<br/>repository functions in db.ts"]
+        PROVIDER["ProviderGateway<br/>deadline and labelled cache"]
     end
-
-    subgraph S["Persistence & external services"]
-        direction LR
-        DB[("Supabase Postgres<br/>tables + RLS + RPCs")]
-        AUTH["Supabase Auth<br/>(email/password, OAuth PKCE)"]
-        ST[("Supabase Storage<br/>private bucket issue-images")]
-        LTA["LTA DataMall<br/>EVCBatch · EVChargingPoints"]
-        OM["OneMap<br/>search · routing · map tiles"]
+    subgraph Services["Persistence and external services"]
+        AUTH["Supabase Auth"]
+        DB[("PostgreSQL<br/>RLS, transactions and audit")]
+        STORAGE[("Private issue-image Storage")]
+        LTA["LTA DataMall<br/>station / connector snapshots"]
+        OM["OneMap<br/>place search, routes and tiles"]
     end
-
-    %% invisible links keep the five layers stacked top to bottom
-    P ~~~ A
-    A ~~~ D
-    D ~~~ I
-    I ~~~ S
-
-    UI --> AUTHUI & MAP & PICK
-    UI --> APIC
-    AUTHUI --> SBC
-    UI -- "report image upload" --> SBC
-    APIC -- "HTTPS POST + Bearer JWT" --> RH
-
-    RH --> AG
-    RH --> SH
-    RH --> EM
-    SH --> RC
-    SH --> PE & VS & DF
-    SH --> PR & RR & BR
-    SH --> PG
-    AG -- "getUser · is_current_session_active · app_users" --> DB
-
-    PG --> PC
-    PG --> LTA
-    PG --> OM
-    PR & RR & BR -- "user JWT, RLS applies" --> DB
-    RR -- "signed URL" --> ST
-
-    SBC --> AUTH
-    SBC --> ST
-    MAP -- "tiles" --> OM
+    UI --> CLIENT
+    CLIENT -->|"POST /api/app; bearer JWT"| API
+    API --> SERVICE
+    API --> AUTH
+    API --> DB
+    SERVICE --> ENGINE
+    SERVICE --> SCHEMAS
+    SERVICE --> REPO
+    SERVICE --> PROVIDER
+    REPO -->|"user JWT"| DB
+    REPO -->|"authorized signed URL"| STORAGE
+    PROVIDER --> LTA
+    PROVIDER --> OM
+    CLIENT -->|"sign-in / sign-up"| AUTH
+    CLIENT -->|"owner image upload"| STORAGE
+    UI -->|"map tiles"| OM
 ```
 
 ## 3. Deployment view
@@ -115,7 +83,7 @@ flowchart LR
     LTA["LTA DataMall API"]
     OM["OneMap API"]
 
-    BR -- "HTTPS" --> NX
+    BR -- "HTTP locally; HTTPS at deployment" --> NX
     BR -- "HTTPS: sign-in / sign-up" --> SA
     BR -- "HTTPS: report image upload" --> SS
     BR -- "map tiles" --> OM
@@ -133,27 +101,24 @@ flowchart LR
 ## 4. Request flow: create a charging plan (UC-03)
 
 ```mermaid
-flowchart TD
-    A["Driver clicks 'Find charging options'"] --> B["ApiClient: POST /api/app<br/>{action: 'plan.create', input, mode}"]
-    B --> C{"AuthGuard<br/>valid JWT, active session,<br/>active DRIVER?"}
-    C -- no --> X1["401 / 403 via ErrorMapper"]
-    C -- yes --> D{"ValidationSchemas<br/>planInputSchema + saved profile"}
-    D -- invalid --> X2["400 with field errors"]
-    D -- valid --> E["ReportRepository.getActiveFaults()"]
-    E --> F{"mode?"}
-    F -- DEMO_FIXTURE --> G["DemoFixtures.createDemoScenario()"]
-    F -- LIVE --> H["ProviderGateway.getLiveSnapshot()<br/>LTA batch → nearby postals → connector details"]
-    H --> I["ProviderGateway.getRoutes()<br/>OneMap direct + via-station routes"]
-    H -- "provider failure" --> H2{"cached snapshot?"}
-    H2 -- yes --> I2["mark STALE, reuse cached data"]
-    H2 -- no --> X3["503 / 504, nothing saved"]
-    G --> J
-    I --> J
-    I2 --> J
-    J["PlanEngine.calculatePlan()<br/>feasibility → energy/time/cost → strategy ranking<br/>→ exclude verified faults → top 3"]
-    J --> K["PlanRepository.savePlanVersion()<br/>RPC save_plan_version (CREATE)"]
-    K --> L["RouteCache.remember()"]
-    L --> M["200 {plan} → results view + JourneyMap"]
+flowchart TB
+    A["POST /api/app<br/>plan.create with input and mode"] --> B{"Authenticated active Driver?"}
+    B -->|"No"| AUTHERR["401 / 403; nothing saved"]
+    B -->|"Yes"| C["Validate saved profile and journey inputs;<br/>load active verified fault evidence"]
+    C -->|"Invalid input / missing profile"| VALIDERR["400 with field errors"]
+    C -->|"Valid"| MODE{"Data mode"}
+    MODE -->|"Demo Fixture"| DEMO["Create labelled synthetic scenario"]
+    MODE -->|"Live"| LIVE["Obtain usable LTA snapshot<br/>and OneMap direct / via-station routes"]
+    LIVE -->|"No usable provider evidence"| PROVIDERERR["503 / 504; retain draft"]
+    DEMO --> CALC["calculatePlan()<br/>feasibility, estimates, ranking,<br/>verified-fault filter, top three"]
+    LIVE --> CALC
+    CALC --> SAVE["save_plan_version(CREATE)<br/>atomically save plan and version 1"]
+    SAVE --> RETURN["rememberRoutes(); return saved plan<br/>D-03 results and JourneyMap"]
 ```
+
+For UC-03 plan creation, an LTA cache fallback does not skip OneMap: the route lookup must succeed before the plan is saved. Existing-plan refresh has a separate recovery path that may reuse a recent saved route after a provider failure and labels the result with a warning.
+
+
+
 
 

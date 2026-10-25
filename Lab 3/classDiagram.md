@@ -1,17 +1,35 @@
+# PlugPlan SG — Class Diagram
+
+## UML mapping and design notes
+
+This is a design view of the Lab 3 implementation. React function components, TypeScript modules, SDK objects, and TypeScript interfaces are marked with stereotypes; only ApiError is a project class in the browser client, and the server has a separate class with the same name. Operations on modules/components name their actual exported functions or component functions. ApplicationStartup is a design abstraction for app startup, mapped to src/app/page.tsx's Page() and PlugPlanApp's session/bootstrap effects.
+
+The main patterns are layered client–server coordination (handleAction), repository-style functions in src/lib/server/db.ts, provider gateway/cache functions in providers.ts, and strategy-based ranking in calculatePlan. Browser sign-in and report-image upload use the public Supabase client directly. On API requests, requireUser validates the Supabase user, active-session RPC, and app_users row; the route applies the driver/moderator role gate, and database calls keep the user's JWT so RLS remains in force.
+
+Persistence mapping: a driver's optional VehicleProfile is stored in vehicles.data; a SavedPlan owns immutable PlanVersion history, with currentVersionId pointing to one version. selectedRecommendationId is an optional pointer into that current version and is checked by the database trigger. Reports persist category and status (there is no type field); officialStatus is computed from the provider cache and is not stored. OAuth UI is conditional on Supabase provider configuration and is not enabled in the baseline.
+
 ```mermaid
 classDiagram
-    %% ===== PRESENTATION LAYER =====
+    %% ===== STARTUP AND PRESENTATION =====
+    class ApplicationStartup {
+        <<design abstraction>>
+        +Page()
+    }
     class PlugPlanApp {
-        -session: Session
-        -data: AppBootstrap
+        <<React function component>>
+        -session: Session | null
+        -data: AppBootstrap | null
         -view: View
         -mode: Mode
         -draft: Draft
         -profileDraft: VehicleProfile
-        -currentPlanId: string
-        -activeVersionId: string
-        -compareIds: List
-        +navigate(view)
+        -currentPlanId: string | null
+        -activeVersionId: string | null
+        -compareIds: string[]
+        -selectedReport: IssueReport | null
+        -moderationAction: ModerationAction
+        +reload()
+        +navigate(next)
         +submitPlan(e)
         +refreshPlan()
         +saveProfile(e)
@@ -21,163 +39,207 @@ classDiagram
         +logout()
     }
     class AuthScreen {
-        -mode: signin
+        <<React function component>>
+        -mode: signin | signup
         -email: string
         -password: string
+        -providers: {google: boolean; github: boolean} | null
         +socialSignIn(provider)
         +submit(e)
     }
     class PlacePicker {
+        <<React function component>>
         -query: string
-        -places: List
+        -places: Place[]
         -active: number
-        +choose(place)
+        +choose(p)
     }
     class JourneyMap {
-        -map: L.Map
-        -layer: LayerGroup
-        +render(origin, destination, recommendations)
+        <<React function component>>
+        +JourneyMap(origin, destination, recommendations, selectedId)
     }
     class Modal {
-        +showModal()
+        <<React function component>>
+        +Modal(title, children, onClose, wide)
     }
-    class Button
-    class Field
-    class Empty
-    class DataBadge
-    class StatusBadge
+    class Button {
+        <<React function component>>
+        +Button(children, props)
+    }
+    class Field {
+        <<React function component>>
+        +Field(label, hint, error, children)
+    }
+    class Empty {
+        <<React function component>>
+        +Empty(icon, title, description, children)
+    }
+    class DataBadge {
+        <<React function component>>
+        +DataBadge(state)
+    }
+    class StatusBadge {
+        <<React function component>>
+        +StatusBadge(status)
+    }
 
-    %% ===== CLIENT API LAYER =====
+    %% ===== CLIENT API AND SUPABASE SDK =====
     class ApiClient {
+        <<TypeScript module>>
         +api(action, payload)
-        +formatSG(value) string
-        +localSG(value) string
-        +currency(value) string
+        +formatSG(value, options)
+        +localSG(value)
+        +currency(value)
     }
     class SupabaseClient {
+        <<SDK type>>
         +auth
         +storage
         +from(table)
         +rpc(fn, args)
     }
-    class ApiError {
+    class ClientApiError {
+        <<ApiError in src/lib/client.ts>>
         +message: string
         +status: number
         +fields: Record
         +retryAfter: number
     }
 
-    %% ===== API ROUTE / CONTROLLER LAYER =====
+    %% ===== API CONTROL AND ACCESS CONTROL =====
     class RouteHandler {
-        +POST(request) Response
-        -readBody(request) string
+        <<Next.js route module>>
+        +POST(request)
+        -readBody(request)
         -DRIVER_ACTIONS: Set
     }
     class ServiceHandler {
-        +handleAction(context, body) Record
+        <<TypeScript module>>
+        +handleAction(context, body)
     }
     class RequestContext {
+        <<TypeScript interface>>
         +token: string
         +sessionId: string
         +db: SupabaseClient
+        +providerDeadline: Deadline
         +user: AppUser
         +authUser: User
     }
     class AuthGuard {
-        +requireUser(request, deadline) RequestContext
+        <<TypeScript module>>
+        +getPublicSupabaseClient(accessToken)
+        +requireUser(request, providerDeadline)
         +requireDriver(context)
         +requireModerator(context)
     }
     class ErrorMapper {
-        +errorResponse(error) Response
-        +validationError(issues) ApiError
-        +databaseError(error) ApiError
+        <<TypeScript module>>
+        +errorResponse(error)
+        +validationError(issues)
+        +databaseError(error)
+    }
+    class ServerApiError {
+        <<ApiError in src/lib/server/errors.ts>>
+        +message: string
+        +status: number
+        +fields: Record
+        +retryAfter: number
     }
 
-    %% ===== DOMAIN / ENGINE LAYER =====
+    %% ===== DOMAIN AND VALIDATION =====
     class PlanEngine {
-        -CHARGING_EFFICIENCY: number
-        -BALANCED_WEIGHTS: object
-        +calculatePlan(params) PlanResult
-        -assignScores(candidates, strategy) List
-        -compareCandidates(a, b, strategy) number
-        -failureForStation(...) result
-        -estimateCost(connector, kWh, min) number
-        -coversChargingWindow(...) boolean
-        -parseOpeningHours(value) OpeningWindow
+        <<TypeScript module>>
+        +calculatePlan(input, profile, snapshot, directRoute, routes, faults)
     }
     class ValidationSchemas {
-        +profileSchema: ZodType
-        +planInputSchema: ZodType
-        +reportSchema: ZodType
+        <<TypeScript module>>
+        +profileSchema
+        +planInputSchema
+        +reportSchema
     }
     class DemoFixtures {
+        <<TypeScript module>>
         +DEMO_PROFILE
         +DEMO_INPUT
         +DEMO_SNAPSHOT
+        +DEMO_DIRECT_ROUTE
         +DEMO_ROUTES
         +DEMO_FAULTS
-        +createDemoScenario(input, profile) scenario
+        +createDemoScenario(input, profile)
     }
     class PolylineDecoder {
-        +decodePolyline(encoded) List
+        <<TypeScript module>>
+        +decodePolyline(encoded)
     }
 
-    %% ===== PROVIDER LAYER =====
+    %% ===== PROVIDER INTEGRATION =====
     class ProviderGateway {
-        +createProviderDeadline(fetch, budget) Deadline
-        +searchPlaces(query, mode, deadline) List
-        +getLiveSnapshot(origin, dest, deadline) snapshot
-        +getRoutes(origin, dest, stations, profile, deadline) routes
-        +formatCachedOfficialStatus(...) string
-        +attachCachedOfficialStatuses(reports) reports
+        <<TypeScript module>>
+        +createProviderDeadline(fetchImpl, budgetMs)
+        +searchPlaces(query, mode, deadline)
+        +getLiveSnapshot(origin, destination, deadline)
+        +getRoutes(origin, destination, stations, profile, deadline)
+        +formatCachedOfficialStatus(report, station, observedAt, detailRetrievedAt, now)
+        +attachCachedOfficialStatuses(reports)
+        +getDemoPlaces(query)
     }
     class ProviderCache {
-        -memoryCache: DiskCache
-        +loadCache() DiskCache
-        +saveCache(value) void
+        <<module-local cache functions>>
+        -memoryCache
+        +loadCache()
+        +saveCache(value)
     }
     class Deadline {
+        <<TypeScript interface>>
         +at: number
         +fetch: function
     }
 
-    %% ===== PERSISTENCE LAYER =====
+    %% ===== REPOSITORY RESPONSIBILITIES =====
+    class ProfileRepository {
+        <<repository functions>>
+        +getProfile(context)
+        +saveProfile(context, profile)
+        +deleteProfile(context)
+    }
     class PlanRepository {
-        +getProfile(context) VehicleProfile
-        +saveProfile(context, profile) VehicleProfile
-        +deleteProfile(context) void
-        +listPlans(context) List
-        +getOwnedPlan(context, planId) SavedPlan
-        +savePlanVersion(context, planId, result, reason) SavedPlan
-        +selectRecommendation(context, planId, recId) SavedPlan
-        +deletePlan(context, planId) void
+        <<repository functions>>
+        +listPlans(context)
+        +getOwnedPlan(context, planId)
+        +savePlanVersion(context, planId, result, reason)
+        +selectRecommendation(context, planId, recommendationId)
+        +deletePlan(context, planId)
     }
     class ReportRepository {
-        +listReports(context) List
-        +getReport(context, reportId) IssueReport
-        +submitReport(context, input) result
-        +moderateReport(context, input) IssueReport
-        +getActiveFaults(context) List
-        +createImageUrl(context, reportId) string
+        <<repository functions>>
+        +listReports(context)
+        +getReport(context, reportId)
+        +submitReport(context, input)
+        +moderateReport(context, reportId, action, reason, expectedRevision, mergeTargetId)
+        +getActiveFaults(context)
     }
     class BootstrapRepository {
-        +bootstrap(context) AppBootstrap
-        +revokeSession(context) void
+        <<repository functions>>
+        +bootstrap(context)
+        +revokeSession(context)
+        +createImageUrl(context, reportId)
     }
 
-    %% ===== DOMAIN TYPES =====
+    %% ===== DOMAIN TYPES AND PERSISTED RECORD VIEWS =====
     class AppUser {
+        <<TypeScript interface>>
         +id: string
         +email: string
         +role: Role
         +status: string
     }
     class VehicleProfile {
+        <<TypeScript interface; vehicles.data>>
         +name: string
         +capacityKWh: number
         +consumptionKWhPer100Km: number
-        +plugTypes: List
+        +plugTypes: string[]
         +maxAcKw: number
         +maxDcKw: number
         +reserveSoc: number
@@ -186,6 +248,7 @@ classDiagram
         +maxWalkingM: number
     }
     class Place {
+        <<TypeScript interface>>
         +label: string
         +lat: number
         +lng: number
@@ -193,6 +256,7 @@ classDiagram
         +address: string
     }
     class PlanInput {
+        <<TypeScript interface>>
         +origin: Place
         +destination: Place
         +currentSoc: number
@@ -200,9 +264,10 @@ classDiagram
         +maxChargingMinutes: number
         +maxDetourMinutes: number
         +strategy: Strategy
-        +manualTargetSoc: number
+        +manualTargetSoc: number | null
     }
     class Station {
+        <<TypeScript interface>>
         +id: string
         +name: string
         +address: string
@@ -210,95 +275,131 @@ classDiagram
         +lat: number
         +lng: number
         +operator: string
-        +openingHours: string
-        +connectors: List
+        +openingHours: string | null
+        +openingHoursAssumed: boolean
+        +connectors: Connector[]
     }
     class Connector {
+        <<TypeScript interface>>
         +id: string
         +plugType: string
-        +powerType: string
+        +powerType: AC | DC
         +powerKw: number
-        +price: number
-        +priceType: priceType
-        +status: status
+        +price: number | null
+        +priceType: kWh | h | free | unknown
+        +status: AVAILABLE | OCCUPIED | UNAVAILABLE
     }
     class OfficialSnapshot {
+        <<TypeScript interface>>
         +source: string
         +state: DataState
         +observedAt: string
         +retrievedAt: string
-        +stations: List
+        +stations: Station[]
     }
     class RouteEstimate {
+        <<TypeScript interface>>
         +distanceKm: number
         +durationMinutes: number
-        +geometry: string
+        +geometry: string (optional)
     }
     class CandidateRoute {
+        <<TypeScript interface>>
         +stationId: string
         +toStation: RouteEstimate
         +fromStation: RouteEstimate
-        +walkingMeters: number
+        +walkingMeters: number (optional)
     }
     class Recommendation {
+        <<TypeScript interface>>
         +id: string
         +stationId: string
         +connectorId: string
         +stationName: string
         +chargingMinutes: number
-        +estimatedCost: number
+        +estimatedCost: number | null
         +arrivalSoc: number
+        +automaticTargetSoc: number
         +targetSoc: number
+        +requiredBatteryKWh: number
+        +requiredChargerKWh: number
         +detourMinutes: number
+        +travelMinutes: number
         +totalJourneyMinutes: number
         +availability: number
         +score: number
         +rank: number
-        +explanations: List
-        +warnings: List
+        +explanations: string[]
+        +warnings: string[]
+        +toStation: RouteEstimate
+        +fromStation: RouteEstimate
+    }
+    class Exclusion {
+        <<TypeScript interface>>
+        +stationId: string
+        +stationName: string
+        +reason: string
+        +code: string
+    }
+    class FaultEvidence {
+        <<TypeScript interface>>
+        +stationId: string
+        +reportId: string
+        +decisionId: string (optional)
+        +expiresAt: string
     }
     class PlanResult {
+        <<TypeScript interface>>
         +inputs: PlanInput
         +profileAssumptions: VehicleProfile
-        +recommendations: List
-        +excluded: List
+        +recommendations: Recommendation[]
+        +excluded: Exclusion[]
         +noChargeNeeded: boolean
         +directRoute: RouteEstimate
-        +snapshot: snapshotInfo
-        +faultEvidence: List
+        +snapshot: {source, state, observedAt, retrievedAt}
+        +faultFilterCheckedAt: string
+        +faultEvidence: FaultEvidence[]
         +summary: string
     }
     class SavedPlan {
+        <<TypeScript interface; plans row>>
         +id: string
         +title: string
         +createdAt: string
-        +selectedRecommendationId: string
-        +currentVersionId: string
-        +versions: List
+        +selectedRecommendationId: string | null
+        +currentVersionId: string | null
+        +versions: PlanVersion[]
     }
     class PlanVersion {
+        <<TypeScript interface; plan_versions row>>
         +id: string
         +planId: string
         +number: number
         +createdAt: string
-        +reason: reason
+        +reason: CREATE | RECONFIGURE | REFRESH
         +result: PlanResult
     }
     class IssueReport {
+        <<TypeScript interface; issue_reports row>>
         +id: string
         +userId: string
         +stationId: string
         +stationName: string
+        +connectorId: string | null
         +category: ReportCategory
         +status: ReportStatus
         +note: string
-        +imagePath: string
+        +imagePath: string | null
         +expiresAt: string
+        +createdAt: string
+        +updatedAt: string
         +revision: number
-        +decisions: List
-        +officialStatus: string
+        +mergedIntoId: string | null
+        +decisions: ModerationDecision[]
+        +officialStatus: string (optional)
     }
     class ModerationDecision {
+        <<TypeScript interface; moderation_decisions row>>
         +id: string
         +action: ModerationAction
         +reason: string
@@ -307,67 +408,91 @@ classDiagram
         +resultingStatus: ReportStatus
     }
     class AppBootstrap {
+        <<TypeScript interface>>
         +user: AppUser
-        +profile: VehicleProfile
-        +plans: List
-        +reports: List
+        +profile: VehicleProfile | null
+        +plans: SavedPlan[]
+        +reports: IssueReport[]
     }
 
     %% ===== RELATIONSHIPS =====
-    PlugPlanApp --> AuthScreen : uses
+    ApplicationStartup --> PlugPlanApp : renders
+    PlugPlanApp --> AuthScreen : renders
     PlugPlanApp --> PlacePicker : uses
-    PlugPlanApp --> JourneyMap : uses
-    PlugPlanApp --> Modal : uses
+    PlugPlanApp --> JourneyMap : renders
+    PlugPlanApp --> Modal : renders
+    PlugPlanApp --> Button : uses
+    PlugPlanApp --> Field : uses
+    PlugPlanApp --> Empty : uses
+    PlugPlanApp --> DataBadge : uses
+    PlugPlanApp --> StatusBadge : uses
     PlugPlanApp ..> ApiClient : calls
-    PlugPlanApp ..> SupabaseClient : auth
-
-    ApiClient --> ApiError : throws
+    PlugPlanApp ..> SupabaseClient : session
+    AuthScreen ..> SupabaseClient : sign-in
+    ApiClient --> ClientApiError : throws
     ApiClient ..> RouteHandler : POST /api/app
+    JourneyMap ..> PolylineDecoder : decodes geometry
+    PlugPlanApp ..> SupabaseClient : uploads report image
 
-    RouteHandler --> AuthGuard : validates
-    RouteHandler --> ServiceHandler : delegates
-    RouteHandler --> ErrorMapper : on error
-
+    RouteHandler --> AuthGuard : authenticates and gates role
+    RouteHandler --> ServiceHandler : dispatches
+    RouteHandler --> ErrorMapper : maps errors
+    ErrorMapper --> ServerApiError : returns
+    AuthGuard --> RequestContext : creates
+    RequestContext --> AppUser
+    RequestContext --> SupabaseClient : user-JWT client
     ServiceHandler --> PlanEngine : calculate
-    ServiceHandler --> PlanRepository : persist
-    ServiceHandler --> ReportRepository : persist
-    ServiceHandler --> BootstrapRepository : load
-    ServiceHandler --> ProviderGateway : fetch
     ServiceHandler --> ValidationSchemas : validates
     ServiceHandler --> DemoFixtures : demo mode
-    ServiceHandler --> AuthGuard : role check
+    ServiceHandler --> ProfileRepository
+    ServiceHandler --> PlanRepository
+    ServiceHandler --> ReportRepository
+    ServiceHandler --> BootstrapRepository
+    ServiceHandler --> ProviderGateway : fetches provider data
 
     ProviderGateway --> Deadline : uses
-    ProviderGateway --> ProviderCache : reads
+    ProviderGateway --> ProviderCache : reads and writes
+    ProviderGateway --> Station
+    ProviderGateway --> RouteEstimate
+    ProviderGateway --> CandidateRoute
 
     PlanEngine --> PlanInput
     PlanEngine --> VehicleProfile
     PlanEngine --> OfficialSnapshot
-    PlanEngine --> RouteEstimate
     PlanEngine --> CandidateRoute
-    PlanEngine --> PlanResult
-    PlanEngine --> Recommendation : creates
+    PlanEngine --> FaultEvidence
+    PlanEngine --> PlanResult : returns
+    PlanResult "1" *-- "0..3" Recommendation : shortlist
+    PlanResult "1" *-- "0..*" Exclusion : excluded
+    PlanResult "1" *-- "0..*" FaultEvidence : evidence
+    PlanResult "1" *-- "1" PlanInput : inputs
+    PlanResult "1" *-- "1" VehicleProfile : assumptions
+    PlanResult "1" *-- "1" RouteEstimate : directRoute
+    Recommendation "1" *-- "2" RouteEstimate : toStation and fromStation
+    CandidateRoute "1" *-- "2" RouteEstimate : toStation and fromStation
+    OfficialSnapshot "1" *-- "0..*" Station : stations
+    Station "1" *-- "0..*" Connector : connectors
 
-    PlanResult *-- Recommendation : contains
-    PlanResult *-- Exclusion : contains
-    SavedPlan *-- PlanVersion : contains
-    PlanVersion *-- PlanResult : has
-    IssueReport *-- ModerationDecision : has
-    Station *-- Connector : has
-    OfficialSnapshot *-- Station : contains
-    CandidateRoute *-- RouteEstimate : has
-    Recommendation --> RouteEstimate : toStation
-
+    AppUser "1" --> "0..1" VehicleProfile : profile
+    AppUser "1" --> "0..*" SavedPlan : owns
+    AppUser "1" --> "0..*" IssueReport : submits
+    SavedPlan "1" *-- "1..*" PlanVersion : versions
+    SavedPlan "0..1" --> "0..1" PlanVersion : currentVersionId
+    SavedPlan "0..1" --> "0..1" Recommendation : selectedRecommendationId
+    PlanVersion "1" *-- "1" PlanResult : immutable result
+    IssueReport "1" *-- "0..*" ModerationDecision : decisions
+    ModerationDecision "0..*" --> "1" AppUser : moderator
     AppBootstrap --> AppUser
-    AppBootstrap --> VehicleProfile
-    AppBootstrap --> SavedPlan
-    AppBootstrap --> IssueReport
+    AppBootstrap --> "0..1" VehicleProfile
+    AppBootstrap --> "0..*" SavedPlan
+    AppBootstrap --> "0..*" IssueReport
 
-    RequestContext --> AppUser
-    RequestContext --> SupabaseClient
-
-    JourneyMap ..> PolylineDecoder : decodes
-    DemoFixtures ..> OfficialSnapshot
-    DemoFixtures ..> CandidateRoute
-    DemoFixtures ..> VehicleProfile
+    Note for ProfileRepository "ProfileRepository, PlanRepository, ReportRepository, and BootstrapRepository group functions in src/lib/server/db.ts. report.moderate sends moderationAction and expectedRevision; handleAction maps moderationAction to action, then db.ts sends p_action and p_expected_revision to the RPC."
+    Note for SavedPlan "The current-version FK is constrained to the same plan. The selected ID is checked against recommendations in the current version; it is not a separate SQL table."
+    Note for PlanVersion "The plan_versions row stores result as JSONB. A database trigger rejects updates to existing versions."
+    Note for IssueReport "officialStatus is cache-derived for moderator views and is not persisted."
+    Note for AuthGuard "requireUser calls Supabase Auth getUser, is_current_session_active RPC, then reads app_users. Route role gates and RLS enforce access."
 ```
+
+
+

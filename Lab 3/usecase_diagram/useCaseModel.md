@@ -3,7 +3,7 @@
 **Module:** SC2006 Software Engineering  
 **Team:** SCE3-04  
 **Deliverable:** Lab 3 - Use Case Model  
-**Last updated:** 24 October 2026
+**Last updated:** 25 October 2026
 
 ## 1. Complete use case diagram
 
@@ -23,10 +23,10 @@
 |---|---|---|---|
 | UC-01 | Access Account | Driver or Moderator | - |
 | UC-02 | Manage EV Profile | Driver | - |
-| UC-03 | Create Charging Plan | Driver | OneMap and LTA DataMall |
+| UC-03 | Create Charging Plan | Driver | OneMap and LTA DataMall, when LIVE data is used |
 | UC-04 | Review and Compare Recommendations | Driver | - |
 | UC-05 | Reconfigure Charging Plan | Driver | OneMap and LTA DataMall, when fresh data is required |
-| UC-06 | Refresh Plan and Select Fallback | Driver | OneMap and LTA DataMall |
+| UC-06 | Refresh Plan and Select Fallback | Driver | OneMap and LTA DataMall, when LIVE data is used |
 | UC-07 | Submit Charger Issue | Driver | - |
 | UC-08 | Moderate Charger Reports | Moderator | - |
 
@@ -88,7 +88,7 @@
 | Created by | Team SCE3-04 |
 | Last updated by | Team SCE3-04 |
 | Date created | 4 September 2026 |
-| Date updated | 24 October 2026 |
+| Date updated | 25 October 2026 |
 | Actor(s) | Driver |
 | Priority | High |
 | Frequency | Occasionally; before first plan and when vehicle assumptions change |
@@ -109,7 +109,7 @@
 **Normal flow of events**
 
 1. The Driver opens EV Profile.
-2. The system displays the current profile, or an empty form if none exists.
+2. The system displays the current profile, or a setup form with default values if none exists.
 3. The Driver enters vehicle, battery, connector, charging and route-preference values.
 4. The Driver submits the profile.
 5. The system validates all required fields and allowed ranges.
@@ -129,7 +129,7 @@
 
 **Special requirements:** Capacity, consumption, plug type, AC/DC power, reserve, detour, minimum charger power and maximum walking distance must be validated server-side.
 
-**Assumptions:** The MVP permits at most one EV Profile per Driver. A valid profile is required before planning.
+**Assumptions:** The MVP permits at most one EV Profile per Driver. A valid profile is required before planning. A new profile defaults to 20% reserve SOC; the Driver can configure it from 5% to 40%.
 
 **Notes and issues:** Changing the profile affects newly created or reconfigured versions; it does not rewrite immutable historical Plan Versions.
 
@@ -140,8 +140,8 @@
 | Created by | Team SCE3-04 |
 | Last updated by | Team SCE3-04 |
 | Date created | 4 September 2026 |
-| Date updated | 24 October 2026 |
-| Actor(s) | Driver (primary); External Data Providers - OneMap and LTA DataMall (supporting) |
+| Date updated | 25 October 2026 |
+| Actor(s) | Driver (primary); External Data Providers - OneMap and LTA DataMall (supporting when LIVE data is used) |
 | Priority | Critical |
 | Frequency | Once or more per planned journey |
 | Traceability | FR-05 to FR-19, FR-24 refinement; D-02, D-03 |
@@ -160,12 +160,12 @@
 
 **Normal flow of events**
 
-1. The Driver enters origin, destination, state of charge, departure time, charging limit, detour limit, strategy and optional target, then submits.
+1. The Driver enters origin, destination, current state of charge, departure time, maximum charging time, maximum detour, ranking strategy and optional manual target SOC, then submits.
 2. The system validates the inputs and resolves the selected places through OneMap.
 3. The system obtains a station snapshot from LTA DataMall and direct/via route results from OneMap.
 4. The system computes compatibility, reachability, arrival charge, target energy, charging time, detour, dwell and available cost evidence.
-5. The system excludes infeasible or verified-fault options and ranks the remaining connectors using the selected strategy.
-6. The system stores the Plan Version and displays up to three recommendations with assumptions, timestamps and data-state labels.
+5. The system excludes infeasible candidates and ranks eligible station candidates using the selected strategy. After ranking, it excludes stations supported by at least one active, Moderator-verified `SUSPECTED_FAULTY_CONNECTOR` report, including reports attached to a connector.
+6. The system takes up to the three highest-ranked surviving stations, stores the Plan Version and displays the recommendations with assumptions, source timestamps and data-state labels.
 
 **Alternative flows**
 
@@ -181,11 +181,11 @@
 
 **Includes:** None.
 
-**Special requirements:** Inputs and computed outputs must be validated server-side. Calculation evidence must be reproducible from the saved snapshot and assumptions.
+**Special requirements:** Inputs and computed outputs must be validated server-side. Each saved result retains its inputs, copied profile assumptions, source timestamps, route estimates and recommendation metrics for later review.
 
-**Assumptions:** Reserve is 20%, charging efficiency is 90%, and targets above 80% display a taper warning. Price may be unavailable.
+**Assumptions:** A new EV Profile defaults to 20% reserve SOC, configurable by the Driver from 5% to 40%. Charging efficiency is 90%, targets above 80% display a taper warning, and price may be unavailable.
 
-**Notes and issues:** OneMap supplies search and route data; LTA DataMall supplies station/connector snapshots. Verified, unexpired suspected-fault reports may remove affected options.
+**Notes and issues:** OneMap supplies search and route data; LTA DataMall supplies station/connector snapshots when LIVE data is used. Fault exclusion is station-level and occurs after ranking but before the three-option shortlist is formed. A connector-target report supports exclusion of its parent station only while it is categorized `SUSPECTED_FAULTY_CONNECTOR`, verified and unexpired.
 
 ## UC-04 - Review and Compare Recommendations
 
@@ -194,39 +194,41 @@
 | Created by | Team SCE3-04 |
 | Last updated by | Team SCE3-04 |
 | Date created | 4 September 2026 |
-| Date updated | 24 October 2026 |
+| Date updated | 25 October 2026 |
 | Actor(s) | Driver |
 | Priority | High |
 | Frequency | After plan creation, reconfiguration or refresh |
 | Traceability | FR-18 to FR-20; D-03, D-04 |
 
-**Description.** The Driver inspects recommendation evidence, compares two or three alternatives and records a preferred recommendation without making a reservation.
+**Description.** The Driver reviews and compares recommendations, then may select a preferred recommendation from the current Plan Version without making a reservation.
 
 **Preconditions**
 
 - The Driver is authenticated.
-- An owned Plan Version containing at least one recommendation exists.
+- The Driver owns a Charging Plan with at least one Plan Version.
+- To select a recommendation, the current Plan Version must contain that recommendation; historical versions are read-only for selection.
 
 **Postconditions**
 
-- The selected recommendation, if any, is persisted for the current Plan Version.
+- The Charging Plan stores the selected recommendation ID as a mutable plan-level selection, which must refer to a recommendation in its current Plan Version.
+- Changing the selection does not create a new Plan Version.
 - No station reservation, payment or queue position is created.
 
 **Normal flow of events**
 
-1. The Driver opens a Plan Version and requests its recommendations.
-2. The system displays ranked cards with route, charging, cost, walking, evidence and data-state details.
-3. The Driver selects two or three options for comparison.
+1. The Driver opens a saved plan and selects a Plan Version to review.
+2. The system displays its ranked cards, route context, connector details, charging and cost estimates, detour, battery and energy estimates, availability, explanations, assumptions, source and data-state labels, and timestamps.
+3. The Driver selects two or three displayed options for comparison, or proceeds with the default comparison of all displayed recommendations.
 4. The system displays the selected options in a consistent metric order.
-5. The Driver reviews the trade-offs and selects a preferred recommendation.
-6. The system stores the selection and confirms it.
+5. The Driver reviews the trade-offs and, when viewing the current Plan Version, selects a preferred recommendation.
+6. The system updates the Charging Plan's selection and confirms it without creating a Plan Version.
 
 **Alternative flows**
 
-- UC-04.A1 - At step 3, fewer than two recommendations exist; comparison is disabled, but the Driver can continue reviewing the available option.
-- UC-04.A2 - At step 4, price data is missing; the system displays Unavailable and does not invent a price.
-- UC-04.A3 - At step 1, the Driver opens a saved or historical Plan Version; the system displays that version without modifying newer versions.
-- UC-04.A4 - At step 5, the Driver clears or changes the selection; the system stores the new state and confirms it.
+- UC-04.A1 - At step 3, fewer than two recommendations exist; comparison is disabled, while any available result and exclusions remain reviewable.
+- UC-04.A2 - At step 4, price data is missing; the system displays Price unavailable and does not invent a price.
+- UC-04.A3 - At step 1, the Driver opens a historical Plan Version; it can be reviewed and compared, but recommendation selection is disabled.
+- UC-04.A4 - At step 5, the Driver chooses a different recommendation in the current Plan Version; the system replaces the plan-level selection without creating a new version.
 
 **Exceptions**
 
@@ -248,11 +250,11 @@
 | Created by | Team SCE3-04 |
 | Last updated by | Team SCE3-04 |
 | Date created | 4 September 2026 |
-| Date updated | 24 October 2026 |
-| Actor(s) | Driver (primary); External Data Providers - OneMap and LTA DataMall (supporting when fresh data is required) |
+| Date updated | 25 October 2026 |
+| Actor(s) | Driver (primary); External Data Providers - OneMap and LTA DataMall (supporting when LIVE data is required) |
 | Priority | High |
 | Frequency | Whenever journey constraints or ranking strategy change |
-| Traceability | FR-05, FR-14, FR-18, FR-21, FR-24 refinement; D-03, D-05 |
+| Traceability | FR-05, FR-14, FR-18, FR-21, FR-24 refinement; D-02, D-03 |
 
 **Description.** The Driver changes plan inputs or strategy and receives a new immutable Plan Version while retaining the previous version.
 
@@ -264,6 +266,7 @@
 **Postconditions**
 
 - A new immutable Plan Version is stored and displayed when recalculation succeeds.
+- The plan-level selection is retained only if the same recommendation remains in the new current-version shortlist; otherwise it is cleared.
 - The previous version remains available for comparison and history.
 
 **Normal flow of events**
@@ -272,7 +275,7 @@
 2. The system loads the current version's values into the reconfiguration view.
 3. The Driver changes one or more values and submits.
 4. The system validates the changes and either reuses sufficiently recent evidence or obtains required OneMap/LTA data.
-5. The system recalculates feasibility, charging estimates, verified-fault filtering and ranking.
+5. The system recalculates feasibility and charging estimates, ranks eligible stations, then excludes stations supported by active, Moderator-verified `SUSPECTED_FAULTY_CONNECTOR` reports before taking up to three survivors.
 6. The system stores and displays a new Plan Version without overwriting the previous version.
 
 **Alternative flows**
@@ -301,11 +304,11 @@
 | Created by | Team SCE3-04 |
 | Last updated by | Team SCE3-04 |
 | Date created | 4 September 2026 |
-| Date updated | 24 October 2026 |
-| Actor(s) | Driver (primary); External Data Providers - OneMap and LTA DataMall (supporting) |
+| Date updated | 25 October 2026 |
+| Actor(s) | Driver (primary); External Data Providers - OneMap and LTA DataMall (supporting when LIVE data is used) |
 | Priority | High |
 | Frequency | Before departure or when the Driver suspects conditions changed |
-| Traceability | FR-07 to FR-19, FR-22 to FR-24; D-03, D-06 |
+| Traceability | FR-07 to FR-19, FR-22 to FR-24; D-03, M-02 |
 
 **Description.** The Driver manually requests newer route and station evidence and selects a fallback if the previously chosen connector is no longer feasible.
 
@@ -317,22 +320,22 @@
 **Postconditions**
 
 - On success, a new Plan Version is stored with refreshed evidence and feasibility results.
-- The previous selection is retained if feasible; otherwise it is cleared and the next feasible option is identified for explicit selection.
+- The plan-level selection is retained only if the same recommendation remains in the refreshed shortlist; otherwise it is cleared and the next-ranked surviving option, if any, is identified for explicit selection.
 
 **Normal flow of events**
 
 1. The Driver selects Refresh on the current Plan Version.
 2. The system requests the latest usable OneMap route data and LTA station snapshot.
-3. The system recalculates feasibility, estimates, verified-fault filtering and ranking.
+3. The system recalculates feasibility and estimates, ranks eligible stations, then excludes stations supported by active, Moderator-verified `SUSPECTED_FAULTY_CONNECTOR` reports before taking up to three survivors.
 4. The system compares the previous selection with the refreshed result.
-5. The system stores and displays a new Plan Version, preserving or clearing the old selection as appropriate.
-6. The Driver reviews the evidence and explicitly keeps or selects a fallback recommendation.
+5. The system stores and displays a new Plan Version, retaining the plan-level selection only if the same recommendation remains in the new shortlist; otherwise it clears that selection.
+6. The Driver reviews the evidence, keeps any retained selection or explicitly selects a fallback recommendation.
 
 **Alternative flows**
 
 - UC-06.A1 - At step 2, only cached or stale evidence is usable; the system labels its state and age before continuing at step 3.
-- UC-06.A2 - At step 4, the selected connector remains feasible; it remains selected in the new version.
-- UC-06.A3 - At step 4, the selected connector is no longer feasible; the system clears it, explains why, and identifies the next ranked option for step 6.
+- UC-06.A2 - At step 4, the selected recommendation remains in the refreshed shortlist; it remains selected for the new current version.
+- UC-06.A3 - At step 4, the selected recommendation is no longer in the refreshed shortlist; the system clears the plan-level selection, explains why and identifies the highest-ranked surviving option for step 6.
 - UC-06.A4 - In Demo Fixture mode, the system refreshes from the labelled fixture snapshot rather than live providers.
 
 **Exceptions**
@@ -355,11 +358,11 @@
 | Created by | Team SCE3-04 |
 | Last updated by | Team SCE3-04 |
 | Date created | 4 September 2026 |
-| Date updated | 24 October 2026 |
+| Date updated | 25 October 2026 |
 | Actor(s) | Driver |
 | Priority | Medium |
 | Frequency | When the Driver observes a charger issue |
-| Traceability | FR-24; D-03, D-06 |
+| Traceability | FR-24; D-05 |
 
 **Description.** The Driver submits a categorized, expiring community report with an optional photo for a station or connector.
 
@@ -400,7 +403,7 @@
 
 **Assumptions:** Default expiry is 24 hours unless a Moderator changes the lifecycle earlier.
 
-**Notes and issues:** Only verified, unexpired suspected-fault reports may support exclusion during planning.
+**Notes and issues:** Only active, verified, unexpired `SUSPECTED_FAULTY_CONNECTOR` reports support station-level exclusion during planning; a connector-target report supports its parent station.
 
 ## UC-08 - Moderate Charger Reports
 
@@ -409,11 +412,11 @@
 | Created by | Team SCE3-04 |
 | Last updated by | Team SCE3-04 |
 | Date created | 4 September 2026 |
-| Date updated | 24 October 2026 |
+| Date updated | 25 October 2026 |
 | Actor(s) | Moderator |
 | Priority | High |
 | Frequency | Several times per day while reports are pending |
-| Traceability | FR-02, FR-24, FR-25; M-01, M-02 |
+| Traceability | FR-02, FR-24, FR-25; D-06 |
 
 **Description.** A Moderator reviews community evidence and records a justified lifecycle decision that may affect recommendation filtering.
 
@@ -425,7 +428,7 @@
 **Postconditions**
 
 - The accepted lifecycle action and nonblank reason are stored with an audit entry.
-- Recommendation filtering changes only when the resulting verified, unexpired suspected-fault evidence supports it.
+- Recommendation filtering changes only when a resulting verified, unexpired `SUSPECTED_FAULTY_CONNECTOR` report supports a station-level mark.
 
 **Normal flow of events**
 
@@ -438,7 +441,7 @@
 
 **Alternative flows**
 
-- UC-08.A1 - At step 3, the Moderator keeps the report pending or cancels; no lifecycle state is changed.
+- UC-08.A1 - At step 3, the Moderator closes or cancels the decision form; the report keeps its existing status and no decision is recorded.
 - UC-08.A2 - At step 3, Merge is selected; the Moderator chooses a valid target and the system preserves one authoritative report before continuing at step 4.
 - UC-08.A3 - At step 2, official status or evidence contradicts the report; the Moderator selects Reject or Resolve and records the reason.
 - UC-08.A4 - At step 3, a reason or valid merge target is missing; the system displays validation feedback and returns to step 3.
@@ -455,7 +458,7 @@
 
 **Assumptions:** There is no appeal workflow in the MVP. Pending, rejected, resolved and expired reports do not cause exclusion.
 
-**Notes and issues:** A station remains marked only while at least one verified, unexpired suspected-fault report supports it; merge must not create duplicate support.
+**Notes and issues:** A station remains marked only while at least one `SUSPECTED_FAULTY_CONNECTOR` report is VERIFIED and unexpired; a connector-target report supports its parent station. Pending, rejected, resolved, expired and non-fault reports do not cause exclusion, and merge must not create duplicate support.
 
 ## 3. Scope exclusions
 

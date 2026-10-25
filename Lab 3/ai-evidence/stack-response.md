@@ -1,0 +1,8 @@
+Use one TypeScript codebase: React screens in the Next.js App Router, with Route Handlers as the control boundary. They provide custom Web Request/Response handlers for authentication, validation, dispatch, and error mapping ([Next.js docs](https://nextjs.org/docs/app/getting-started/route-handlers)). Keep plan calculation pure. Thin repositories and two server-side adapters normalize LTA DataMall and OneMap responses, apply deadlines, and label live, cached, or stale data. Use Leaflet for the map and OneMap tiles.
+
+Use Supabase Auth, PostgreSQL, and private Storage. Forward the signed-in user’s JWT to database calls; enforce driver ownership with RLS, and gate moderator actions in the server and database. Supabase RLS policies provide database-side authorization using Auth context; private buckets apply RLS to objects ([RLS](https://supabase.com/docs/guides/database/postgres/row-level-security); [private buckets](https://supabase.com/docs/guides/storage/buckets/fundamentals)). Store moderator roles in trusted, server-controlled data and audit each moderation action with actor, reason, and revision.
+
+Store immutable PlanVersions as JSONB rows, using the design’s update-rejecting SQL trigger and same-plan version constraint. For creation, reconfiguration, and manual refresh, rank feasible stations first, then filter only moderator-verified, unexpired faults. Preserve evidence and explain a short or empty list; pending reports never exclude a station.
+
+Skip microservices, queues, an ORM, a separate auth service, and automatic refresh. One Next.js deployment and Supabase are sufficient for a student team. Main risk is provider changes or outages; keep adapters isolated and label manual refresh as a new version.
+
