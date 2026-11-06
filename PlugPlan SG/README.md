@@ -43,7 +43,7 @@ The ignored `credentials.env` is loaded by `next.config.ts`. Required variables:
 | `LTA_Datamall_API` | LTA DataMall AccountKey; server only |
 | `OneMap_API` | Current OneMap token; server only |
 
-Do not add `NEXT_PUBLIC_` to provider credentials. A Supabase service-role key is not used. Restart the server after changing provider credentials. Rebuild a production bundle if the Supabase URL or public key changes, because these two public settings are included in browser code. OneMap tokens expire: replace the token when needed. The currently configured OneMap token expires on 18 October 2026 at 14:06 SGT. Never commit `credentials.env`, `.env*`, `.local`, or `.cache`.
+Do not add `NEXT_PUBLIC_` to provider credentials. A Supabase service-role key is not used. Restart the server after changing provider credentials. Rebuild a production bundle if the Supabase URL or public key changes, because these two public settings are included in browser code. OneMap tokens expire every 3 days: run `node scripts/renew-onemap-token.mjs` to fetch a new one into `credentials.env` (add `--vercel` to also update the Vercel production variable and redeploy). Never commit `credentials.env`, `.env*`, `.local`, or `.cache`.
 
 The current target is project `lqzuldwhzrbgitelztnx`. Its database migrations and private image bucket are recorded in [supabase/README.md](supabase/README.md). For a fresh Supabase project, apply the SQL migrations in filename order. New Auth users are provisioned as Drivers regardless of client metadata. Moderator accounts are provisioned by the project administrator, not through public signup.
 

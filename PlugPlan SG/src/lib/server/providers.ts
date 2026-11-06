@@ -72,8 +72,9 @@ async function jsonResponse(response: Response, deadline: Deadline): Promise<unk
     if (response.status === 429) throw new ProviderError('The live data provider is rate limiting requests.', 503);
     throw new ProviderError();
   }
+  const body = await withinDeadline(deadline, response.text());
   try {
-    return JSON.parse(await withinDeadline(deadline, response.text()));
+    return JSON.parse(body);
   } catch {
     throw new ProviderError('The live data provider returned invalid data.');
   }

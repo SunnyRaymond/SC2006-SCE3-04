@@ -26,3 +26,6 @@ Thumbs.db
 .cache/
 tmp/
 .local/
+
+.vercel
+.env*

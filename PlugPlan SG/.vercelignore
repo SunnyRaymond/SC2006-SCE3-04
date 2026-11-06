@@ -1,0 +1,14 @@
+credentials.env
+.env
+.env.*
+*.env
+node_modules
+.next
+coverage
+playwright-report
+test-results
+.cache
+tmp
+.local
+*.log
+*.tsbuildinfo
