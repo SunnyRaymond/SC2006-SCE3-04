@@ -724,3 +724,7 @@ ul,ol{margin-top:0}
 .operator-support{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:650;line-height:1.7}.duplicate-summary{padding:24px}.duplicate-summary>p{font-size:12px;line-height:1.8;margin-bottom:18px}.duplicate-summary .metrics-list{margin-bottom:20px}.duplicate-summary .button{margin-top:8px}
 
 .related-reports{margin-bottom:24px}.related-reports ul{list-style:none;padding:0;margin:12px 0}.related-reports li{display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px solid var(--line);padding:9px 0}.related-reports strong{font-size:11px;font-weight:600}.related-reports small{display:block;font-size:10px;color:var(--muted)}
+.gmaps-card-link{width:100%;margin-top:12px;font-size:10px;padding:8px 9px;min-height:34px;gap:6px;text-decoration:none}
+.map-nav{padding:0 18px 16px;display:grid;gap:7px}
+.map-nav .button{text-decoration:none;font-size:11px;white-space:normal;text-align:center}
+.map-nav>span{font-size:10px;color:var(--muted);text-align:center}

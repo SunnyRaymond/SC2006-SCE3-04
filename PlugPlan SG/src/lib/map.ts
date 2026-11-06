@@ -18,3 +18,13 @@ export function decodePolyline(encoded: string): [number, number][] {
   }
   return points;
 }
+
+type LatLng = { lat: number; lng: number };
+const point = (p: LatLng) => `${p.lat.toFixed(6)},${p.lng.toFixed(6)}`;
+
+/** Google Maps driving directions: origin → optional charging stop → destination. Opens the app on mobile. */
+export function googleMapsDirectionsUrl(origin: LatLng, destination: LatLng, stop?: LatLng | null): string {
+  const params = new URLSearchParams({ api: '1', origin: point(origin), destination: point(destination), travelmode: 'driving' });
+  if (stop) params.set('waypoints', point(stop));
+  return `https://www.google.com/maps/dir/?${params.toString()}`;
+}
