@@ -3,6 +3,7 @@ import { ApiError } from './errors';
 import type { AppUser } from '@/lib/types';
 import type { Deadline } from './providers';
 
+/** Authenticated request state passed to every server operation. */
 export interface RequestContext {
   token: string;
   sessionId: string;
@@ -18,6 +19,7 @@ function environment(name: string): string {
   return value;
 }
 
+/** Creates a Supabase client, scoped to the user's JWT when a token is given so RLS applies. */
 export function getPublicSupabaseClient(accessToken?: string): SupabaseClient {
   return createClient(environment('SUPABASE_URL'), environment('SUPABASE_PUBLISHABLE_KEY'), {
     global: accessToken ? { headers: { Authorization: `Bearer ${accessToken}` } } : undefined,
@@ -37,6 +39,10 @@ function sessionIdFromToken(token: string): string | null {
   }
 }
 
+/**
+ * Validates the bearer token, active session and app user row.
+ * @throws ApiError when the request is not authenticated.
+ */
 export async function requireUser(request: Request, providerDeadline?: Deadline): Promise<RequestContext> {
   const authorization = request.headers.get('authorization') ?? '';
   const match = /^Bearer\s+([^\s]+)$/i.exec(authorization);
@@ -73,10 +79,12 @@ export async function requireUser(request: Request, providerDeadline?: Deadline)
   };
 }
 
+/** @throws ApiError unless the signed-in user is a Driver. */
 export function requireDriver(context: RequestContext): void {
   if (context.user.role !== 'DRIVER') throw new ApiError('This action is available to Drivers only.', 403);
 }
 
+/** @throws ApiError unless the signed-in user is a Moderator (NFR-06). */
 export function requireModerator(context: RequestContext): void {
   if (context.user.role !== 'MODERATOR') throw new ApiError('This action is available to Moderators only.', 403);
 }

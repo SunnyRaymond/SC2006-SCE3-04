@@ -1,3 +1,4 @@
+/** An error that is safe to show to the user, with its HTTP status and field messages. */
 export class ApiError extends Error {
   constructor(
     message: string,
@@ -10,6 +11,7 @@ export class ApiError extends Error {
   }
 }
 
+/** An external data provider failed or timed out. */
 export class ProviderError extends Error {
   constructor(message = 'Live provider data is temporarily unavailable.', readonly status = 503) {
     super(message);
@@ -17,6 +19,7 @@ export class ProviderError extends Error {
   }
 }
 
+/** Converts any thrown value into a safe JSON error response. */
 export function errorResponse(error: unknown): Response {
   const apiError = error instanceof ApiError
     ? error
@@ -31,6 +34,7 @@ export function errorResponse(error: unknown): Response {
   return Response.json(body, { status: apiError.status, headers });
 }
 
+/** Maps schema issues to field-specific messages (FR-04). */
 export function validationError(issues: readonly { path: PropertyKey[]; message: string }[]): ApiError {
   const fields: Record<string, string> = {};
   for (const issue of issues) {
@@ -40,6 +44,7 @@ export function validationError(issues: readonly { path: PropertyKey[]; message:
   return new ApiError('Please correct the highlighted fields.', 400, fields);
 }
 
+/** Maps a database error code to a safe ApiError. */
 export function databaseError(error: { code?: string; message?: string } | null | undefined): ApiError {
   if (error?.code === 'PT409' || error?.code === '23505' || error?.code === 'PP409') return new ApiError('This change conflicts with newer data. Refresh and try again.', 409);
   if (error?.code === '42501' || error?.code === 'PP403') return new ApiError('You do not have permission to perform this action.', 403);

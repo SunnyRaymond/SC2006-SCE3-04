@@ -79,23 +79,27 @@ async function loadDecisions(db: SupabaseClient, reportIds: string[]): Promise<M
   return result;
 }
 
+/** Returns the Driver's vehicle profile, or null if none is saved. */
 export async function getProfile(context: RequestContext): Promise<VehicleProfile | null> {
   const { data, error } = await context.db.from('vehicles').select('data').eq('user_id', context.user.id).maybeSingle();
   throwDb(error);
   return data?.data ?? null;
 }
 
+/** Creates or replaces the Driver's single vehicle profile. */
 export async function saveProfile(context: RequestContext, profile: VehicleProfile): Promise<VehicleProfile> {
   const { error } = await context.db.from('vehicles').upsert({ user_id: context.user.id, data: profile, updated_at: new Date().toISOString() }, { onConflict: 'user_id' });
   throwDb(error);
   return profile;
 }
 
+/** Deletes the Driver's vehicle profile. */
 export async function deleteProfile(context: RequestContext): Promise<void> {
   const { error } = await context.db.from('vehicles').delete().eq('user_id', context.user.id);
   throwDb(error);
 }
 
+/** Lists the Driver's saved plans with their version history. */
 export async function listPlans(context: RequestContext): Promise<SavedPlan[]> {
   const { data: rows, error } = await context.db.from('plans')
     .select('id,user_id,title,selected_recommendation_id,current_version_id,created_at')
@@ -119,6 +123,10 @@ export async function listPlans(context: RequestContext): Promise<SavedPlan[]> {
   return (rows ?? []).map(row => mapPlan(row, versionMap.get(row.id) ?? []));
 }
 
+/**
+ * Loads one plan owned by the user.
+ * @throws ApiError when it does not exist.
+ */
 export async function getOwnedPlan(context: RequestContext, planId: string): Promise<SavedPlan> {
   const { data, error } = await context.db.from('plans')
     .select('id,user_id,title,selected_recommendation_id,current_version_id,created_at')
@@ -133,6 +141,11 @@ export async function getOwnedPlan(context: RequestContext, planId: string): Pro
   return mapPlan(data, (versions ?? []).map(mapVersion));
 }
 
+/**
+ * Stores a plan result as a new immutable version.
+ * @param planId Existing plan, or null to create a new one.
+ * @param reason Why this version exists: CREATE, RECONFIGURE or REFRESH.
+ */
 export async function savePlanVersion(
   context: RequestContext,
   planId: string | null,
@@ -154,6 +167,10 @@ export async function savePlanVersion(
   return getOwnedPlan(context, savedPlanId);
 }
 
+/**
+ * Records the chosen recommendation on the plan's current version.
+ * @throws ApiError 409 if the current version changed during selection.
+ */
 export async function selectRecommendation(context: RequestContext, planId: string, recommendationId: string): Promise<SavedPlan> {
   const plan = await getOwnedPlan(context, planId);
   const version = plan.versions.find(item => item.id === plan.currentVersionId);
@@ -168,12 +185,14 @@ export async function selectRecommendation(context: RequestContext, planId: stri
   return mapPlan(data, plan.versions);
 }
 
+/** Deletes one plan owned by the user. */
 export async function deletePlan(context: RequestContext, planId: string): Promise<void> {
   const { data, error } = await context.db.from('plans').delete().eq('id', planId).eq('user_id', context.user.id).select('id').maybeSingle();
   throwDb(error);
   if (!data) throw new ApiError('The requested plan was not found.', 404);
 }
 
+/** Lists issue reports: a Driver's own, or all of them for a Moderator. */
 export async function listReports(context: RequestContext): Promise<IssueReport[]> {
   let query = context.db.from('issue_reports').select('*').order('created_at', { ascending: false });
   if (context.user.role === 'DRIVER') query = query.eq('user_id', context.user.id);
@@ -184,6 +203,7 @@ export async function listReports(context: RequestContext): Promise<IssueReport[
   return rows.map(row => mapReport(row, decisions.get(row.id) ?? []));
 }
 
+/** Loads one issue report visible to the user. */
 export async function getReport(context: RequestContext, reportId: string): Promise<IssueReport> {
   let query = context.db.from('issue_reports').select('*').eq('id', reportId);
   if (context.user.role === 'DRIVER') query = query.eq('user_id', context.user.id);
@@ -194,6 +214,7 @@ export async function getReport(context: RequestContext, reportId: string): Prom
   return mapReport(data, decisions.get(reportId) ?? []);
 }
 
+/** Stores a time-limited Pending issue report (FR-24). */
 export async function submitReport(context: RequestContext, input: {
   stationId: string; stationName: string; connectorId: string | null;
   category: IssueReport['category']; note: string; imagePath: string | null;
@@ -234,6 +255,7 @@ export async function submitReport(context: RequestContext, input: {
   return { report: masked, duplicate: true, sharedDuplicate: true };
 }
 
+/** Applies a Moderator decision with its reason, using optimistic revision checks (FR-25). */
 export async function moderateReport(context: RequestContext, input: {
   reportId: string; action: ModerationAction; reason: string; expectedRevision: number; mergeTargetId: string | null;
 }): Promise<IssueReport> {
@@ -249,6 +271,7 @@ export async function moderateReport(context: RequestContext, input: {
   return getReport(context, reportId);
 }
 
+/** Returns verified fault marks that PlanEngine must apply. */
 export async function getActiveFaults(context: RequestContext): Promise<PlanResult['faultEvidence']> {
   const { data, error } = await context.db.rpc('get_active_faults');
   throwDb(error);
@@ -260,6 +283,7 @@ export async function getActiveFaults(context: RequestContext): Promise<PlanResu
   }));
 }
 
+/** Loads the role-appropriate initial data for the signed-in user. */
 export async function bootstrap(context: RequestContext): Promise<AppBootstrap> {
   if (context.user.role === 'MODERATOR') {
     return { user: context.user as AppUser, profile: null, plans: [], reports: await listReports(context) };
@@ -268,11 +292,13 @@ export async function bootstrap(context: RequestContext): Promise<AppBootstrap> 
   return { user: context.user, profile, plans, reports };
 }
 
+/** Revokes the current session so its token can no longer be used. */
 export async function revokeSession(context: RequestContext): Promise<void> {
   const { error } = await context.db.rpc('revoke_session');
   throwDb(error);
 }
 
+/** Creates a ten-minute signed URL for a report image. */
 export async function createImageUrl(context: RequestContext, reportId: string): Promise<string> {
   const report = await getReport(context, reportId);
   if (!report.imagePath || !report.imagePath.startsWith(`${report.userId}/`)) throw new ApiError('This report has no available image.', 404);

@@ -1,3 +1,4 @@
+/** Decodes an encoded route polyline to [lat, lng] pairs. */
 export function decodePolyline(encoded: string): [number, number][] {
   const points: [number, number][] = [];
   let index = 0, lat = 0, lng = 0;

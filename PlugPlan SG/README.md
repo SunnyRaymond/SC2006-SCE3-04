@@ -2,6 +2,8 @@
 
 A Singapore EV charging planner built with Next.js, React, TypeScript, and Supabase. It supports Driver accounts, one EV profile per Driver, charging recommendations, comparison, saved plan versions, community reports, and a Moderator workspace.
 
+Working prototype: https://plugplan-sg.vercel.app
+
 ## Run locally
 
 Use Node.js 22.12 or later and pnpm 11. From this folder:

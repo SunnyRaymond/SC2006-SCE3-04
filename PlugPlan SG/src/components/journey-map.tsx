@@ -5,6 +5,7 @@ import L from 'leaflet';
 import { decodePolyline } from '@/lib/map';
 import type { Place, Recommendation } from '@/lib/types';
 
+/** Map of the origin, destination and recommended charging stops. */
 export default function JourneyMap({ origin, destination, recommendations = [], selectedId }: {
   origin?: Place | null; destination?: Place | null; recommendations?: Recommendation[]; selectedId?: string | null;
 }) {

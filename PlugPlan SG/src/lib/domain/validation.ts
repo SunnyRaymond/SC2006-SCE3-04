@@ -10,6 +10,7 @@ const placeSchema = z.object({
   postal: z.string().trim().max(32).optional(),
 }).strict();
 
+/** Accepted ranges for a vehicle profile (FR-04). */
 export const profileSchema: z.ZodType<VehicleProfile> = z.object({
   name: z.string().trim().min(1).max(100),
   capacityKWh: finiteNumber.min(10).max(250),
@@ -36,6 +37,7 @@ function isDateTime(value: string): boolean {
   return offsetHour === undefined || (Number(offsetHour) <= 23 && Number(offsetMinute) <= 59);
 }
 
+/** Accepted ranges for a charging-plan request (FR-05). */
 export const planInputSchema: z.ZodType<PlanInput> = z.object({
   origin: placeSchema,
   destination: placeSchema,
@@ -49,6 +51,7 @@ export const planInputSchema: z.ZodType<PlanInput> = z.object({
 
 const categories = ['BLOCKED_BAY', 'SUSPECTED_FAULTY_CONNECTOR', 'INCORRECT_LOCATION', 'ACCESS_PROBLEM'] as const;
 
+/** Accepted fields for a Driver's charger issue report (FR-24). */
 export const reportSchema = z.object({
   stationId: z.string().trim().min(1).max(128),
   stationName: z.string().trim().min(1).max(160),

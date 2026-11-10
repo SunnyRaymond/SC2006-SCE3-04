@@ -4,7 +4,7 @@ Repository for the SC2006 Software Engineering project by group SCE3-04.
 
 ## Current status
 
-The team is in **Lab 1: Requirements Elicitation** and has selected **PlugPlan SG** as its project direction. The next goal is to validate the essential APIs and turn the agreed scope into requirements, Use Cases, a Data Dictionary, and UI Mockups.
+The project is complete. **All deliverables are listed in [INDEX.md](INDEX.md).** The sections below record the team's original planning.
 
 The API review was completed on **27 August 2026**, and the selected scope was updated on **4 September 2026**. API availability, fields, quotas, and access rules can change, so the selected APIs must be tested again before the proposal is fixed.
 

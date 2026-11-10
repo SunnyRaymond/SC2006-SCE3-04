@@ -14,11 +14,13 @@ const DEMO_PLACES: Array<Place & { address: string }> = [
   { label: 'Demo Fixture — Orchard Road', address: 'Orchard Road', lat: 1.3048, lng: 103.8318, postal: '238858' },
 ];
 
+/** Shared time budget for all external calls made by one request (NFR-02). */
 export interface Deadline {
   at: number;
   fetch: typeof fetch;
 }
 
+/** Starts a provider time budget; tests can inject `fetchImpl`. */
 export function createProviderDeadline(fetchImpl: typeof fetch = fetch, budgetMs = PROVIDER_BUDGET_MS): Deadline {
   return { at: Date.now() + budgetMs, fetch: fetchImpl };
 }
@@ -104,6 +106,7 @@ function compactAddress(row: Record<string, unknown>): string {
   return text(row.ADDRESS) || [text(row.BLK_NO), text(row.ROAD_NAME), text(row.BUILDING)].filter(Boolean).join(' ');
 }
 
+/** Resolves a place query through OneMap, or synthetic places in Demo Fixture mode. */
 export async function searchPlaces(query: string, mode: 'LIVE' | 'DEMO_FIXTURE', deadline = createProviderDeadline()): Promise<Place[]> {
   if (mode === 'DEMO_FIXTURE') {
     const q = query.trim().toLocaleLowerCase();
@@ -365,6 +368,7 @@ function freshnessState(observedAt: string, detailTimes: string[], usedCache: bo
   return usedCache ? 'CACHED' : 'LIVE';
 }
 
+/** Fetches LTA charging data near the route, falling back to the cache when the provider fails. */
 export async function getLiveSnapshot(
   origin: Place,
   destination: Place,
@@ -429,6 +433,7 @@ function formatSgt(value?: string): string | null {
   return `${formatted} SGT`;
 }
 
+/** Describes a reported station's cached LTA status for Moderators, without calling LTA. */
 export function formatCachedOfficialStatus(
   report: Pick<IssueReport, 'stationId' | 'stationName' | 'connectorId'>,
   station?: Station,
@@ -469,6 +474,7 @@ export function formatCachedOfficialStatus(
   return `LTA DataMall ${state} status: ${statusText}${detailTime ? ` Detail retrieved ${detailTime}` : ''}${batchTime ? `; batch source time ${batchTime}` : ''}.`;
 }
 
+/** Adds cached official LTA status text to each issue report. */
 export async function attachCachedOfficialStatuses(reports: IssueReport[]): Promise<IssueReport[]> {
   const cache = await loadCache();
   const byId = new Map<string, { station: Station; retrievedAt: string }>();
@@ -519,6 +525,7 @@ async function fetchRoute(deadline: Deadline, start: Pick<Place, 'lat' | 'lng'>,
   }), deadline));
 }
 
+/** Gets the direct route and the legs via compatible stations near it from OneMap. */
 export async function getRoutes(
   origin: Place,
   destination: Place,
@@ -577,11 +584,13 @@ export async function getRoutes(
   };
 }
 
+/** Returns synthetic places matching a query. */
 export function getDemoPlaces(query: string): Place[] {
   const q = query.trim().toLocaleLowerCase();
   return DEMO_PLACES.filter(place => `${place.label} ${place.address}`.toLocaleLowerCase().includes(q)).map(place => ({ ...place }));
 }
 
+/** Returns the per-request provider time budget in milliseconds. */
 export function getProviderBudgetMs(): number {
   return PROVIDER_BUDGET_MS;
 }

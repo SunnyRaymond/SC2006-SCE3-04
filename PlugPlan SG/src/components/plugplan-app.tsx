@@ -102,6 +102,7 @@ function AuthScreen() {
       <div className="auth-disclaimer"><ShieldCheck size={20} /><p><strong>A plan, not a promise.</strong> Charging estimates and availability help you decide. PlugPlan does not reserve chargers or process payments.</p></div></div><footer className="auth-legal">Thoughtfully built for Singapore. <span>All times in SGT (UTC+8).</span></footer></section></div>;
 }
 
+/** Main boundary component: holds the session and renders the Driver and Moderator dialogs. */
 export default function PlugPlanApp() {
   const [session, setSession] = useState<Session | null>(null), [booting, setBooting] = useState(true), [data, setData] = useState<AppBootstrap | null>(null), [bootError, setBootError] = useState('');
   const [view, setView] = useState<View>('plan'), [mode, setMode] = useState<Mode>('LIVE'), [busy, setBusy] = useState(''), [toast, setToast] = useState<{ text: string; error?: boolean } | null>(null), [errors, setErrors] = useState<Record<string, string>>({});

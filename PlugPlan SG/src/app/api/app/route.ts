@@ -40,6 +40,7 @@ async function readBody(request: Request): Promise<string> {
   }
 }
 
+/** Application API boundary: authenticates, checks the request format and role, then calls handleAction. */
 export async function POST(request: Request): Promise<Response> {
   try {
     const providerDeadline = createProviderDeadline();

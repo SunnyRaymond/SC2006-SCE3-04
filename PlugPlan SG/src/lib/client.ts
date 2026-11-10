@@ -6,6 +6,7 @@ export const supabase = createClient(
   { auth: { flowType: 'pkce', detectSessionInUrl: true } },
 );
 
+/** A failed API call, with its HTTP status and field messages. */
 export class ApiError extends Error {
   constructor(message: string, public status: number, public fields?: Record<string, string>, public retryAfter?: number) {
     super(retryAfter && Number.isFinite(retryAfter) && retryAfter > 0
@@ -14,6 +15,10 @@ export class ApiError extends Error {
   }
 }
 
+/**
+ * Posts one action to the API with the current session token.
+ * @throws ApiError when the response is not successful.
+ */
 export async function api<T>(action: string, payload: Record<string, unknown> = {}): Promise<T> {
   const { data: { session } } = await supabase.auth.getSession();
   const response = await fetch('/api/app', {
@@ -30,11 +35,13 @@ export const formatSG = (value: string, options?: Intl.DateTimeFormatOptions) =>
   timeZone: 'Asia/Singapore', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', ...options,
 }).format(new Date(value));
 
+/** Formats a time for a local date-time input in Singapore time. */
 export function localSG(value = new Date().toISOString()) {
   const d = new Date(new Date(value).getTime() + 8 * 3600_000);
   return d.toISOString().slice(0, 16);
 }
 
+/** Formats a cost in S$, or 'Price unavailable' for null. */
 export function currency(value: number | null) {
   return value === null ? 'Price unavailable' : `S$${value.toFixed(2)}`;
 }

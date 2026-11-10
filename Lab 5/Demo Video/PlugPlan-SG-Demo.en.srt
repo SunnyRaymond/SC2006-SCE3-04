@@ -1,0 +1,352 @@
+1
+00:00:01,292 --> 00:00:05,384
+Hi, we're team SCE3-04 from SC2006.
+
+2
+00:00:05,555 --> 00:00:09,364
+This is PlugPlan SG, a web app that helps electric-vehicle
+
+3
+00:00:09,384 --> 00:00:12,082
+drivers in Singapore decide where to charge,
+
+4
+00:00:12,332 --> 00:00:14,733
+how much to charge, and what it will cost,
+
+5
+00:00:14,753 --> 00:00:16,200
+before they set off.
+
+6
+00:00:18,625 --> 00:00:21,612
+Charger maps already tell you where a charger is.
+
+7
+00:00:21,770 --> 00:00:24,184
+What they don't tell you is whether you can reach it,
+
+8
+00:00:24,204 --> 00:00:27,026
+whether the plug fits your car, how long you'd wait,
+
+9
+00:00:27,046 --> 00:00:28,889
+and whether it's worth the detour.
+
+10
+00:00:29,060 --> 00:00:32,540
+PlugPlan combines live charger data from LTA DataMall with
+
+11
+00:00:32,560 --> 00:00:35,652
+OneMap routing, and turns it into a short,
+
+12
+00:00:35,810 --> 00:00:39,375
+explained list of charging stops for one specific trip.
+
+13
+00:00:41,616 --> 00:00:43,339
+Let's start as a driver.
+
+14
+00:00:43,497 --> 00:00:46,609
+If the password is wrong, the error is deliberately generic,
+
+15
+00:00:46,629 --> 00:00:49,405
+so it never reveals whether an account exists.
+
+16
+00:00:50,942 --> 00:00:53,824
+Sign-in is handled by Supabase Auth.
+
+17
+00:00:53,995 --> 00:00:56,508
+There are two roles, Driver and Moderator,
+
+18
+00:00:56,732 --> 00:00:59,205
+and every permission is checked on the server.
+
+19
+00:01:00,716 --> 00:01:02,611
+First, the vehicle profile.
+
+20
+00:01:02,782 --> 00:01:06,748
+Battery capacity, energy consumption, compatible plugs,
+
+21
+00:01:06,768 --> 00:01:10,939
+and maximum AC and DC power all feed into the calculation.
+
+22
+00:01:11,111 --> 00:01:14,143
+The twenty percent reserve means every plan keeps at least
+
+23
+00:01:14,163 --> 00:01:16,782
+twenty percent of battery when you arrive.
+
+24
+00:01:18,809 --> 00:01:22,453
+Now a real trip: from NTU to Marina Bay Sands,
+
+25
+00:01:22,677 --> 00:01:26,026
+starting with only eighteen percent battery and up to an hour
+
+26
+00:01:26,046 --> 00:01:30,328
+to charge. Place search uses OneMap, so the driver picks an
+
+27
+00:01:30,348 --> 00:01:33,467
+exact location instead of typing free text.
+
+28
+00:01:35,009 --> 00:01:38,476
+When I click Find charging options, the server asks OneMap
+
+29
+00:01:38,496 --> 00:01:42,055
+for routes and LTA DataMall for charger locations and live
+
+30
+00:01:42,075 --> 00:01:45,857
+connector status. Each result shows its data source and when
+
+31
+00:01:45,877 --> 00:01:48,686
+it was retrieved. Notice the target:
+
+32
+00:01:48,706 --> 00:01:51,535
+we don't tell you to charge to a hundred percent.
+
+33
+00:01:51,706 --> 00:01:54,778
+We calculate just enough to reach the destination with the
+
+34
+00:01:54,798 --> 00:01:59,153
+reserve intact. Every card shows the estimated charging time,
+
+35
+00:01:59,351 --> 00:02:02,548
+cost, detour, and why it was recommended.
+
+36
+00:02:05,762 --> 00:02:08,052
+The assumptions are always visible.
+
+37
+00:02:08,236 --> 00:02:11,098
+And at the bottom, you can see which stations were excluded,
+
+38
+00:02:11,118 --> 00:02:14,374
+and why: an incompatible plug, too long a detour,
+
+39
+00:02:14,394 --> 00:02:16,275
+or no free connector right now.
+
+40
+00:02:17,809 --> 00:02:21,105
+Compare options puts every candidate side by side on the same
+
+41
+00:02:21,125 --> 00:02:26,144
+metrics: cost, charging time, detour, arrival battery,
+
+42
+00:02:26,164 --> 00:02:29,960
+and overall score. Each option trades time against cost in
+
+43
+00:02:29,980 --> 00:02:31,111
+a different way.
+
+44
+00:02:34,342 --> 00:02:36,263
+I'll select the top-ranked one.
+
+45
+00:02:36,394 --> 00:02:38,855
+Selecting a stop saves a preference.
+
+46
+00:02:39,026 --> 00:02:42,585
+It isn't a booking, because PlugPlan does not reserve chargers
+
+47
+00:02:42,605 --> 00:02:43,921
+or take payments.
+
+48
+00:02:45,475 --> 00:02:48,548
+With one click, the plan opens in Google Maps,
+
+49
+00:02:48,568 --> 00:02:51,068
+with the charging stop already on the route.
+
+50
+00:02:53,175 --> 00:02:57,090
+Priorities change. Switching the strategy to Fastest journey
+
+51
+00:02:57,110 --> 00:03:00,899
+recalculates the ranking and saves a new plan version.
+
+52
+00:03:02,409 --> 00:03:05,560
+Older versions are kept read-only, with their original inputs
+
+53
+00:03:05,580 --> 00:03:08,678
+and results, so you can always see what was recommended,
+
+54
+00:03:08,698 --> 00:03:12,455
+and why. When the server reuses route data from the last ten
+
+55
+00:03:12,475 --> 00:03:16,948
+minutes, the result is labelled Cached, with its real timestamps.
+
+56
+00:03:19,175 --> 00:03:21,320
+Live data isn't always right.
+
+57
+00:03:21,491 --> 00:03:24,695
+If a driver finds a faulty charger, they can report it with
+
+58
+00:03:24,715 --> 00:03:27,202
+a short description and an optional photo:
+
+59
+00:03:27,570 --> 00:03:31,794
+JPEG, PNG or WebP, up to five megabytes.
+
+60
+00:03:33,342 --> 00:03:35,276
+The report starts as Pending.
+
+61
+00:03:35,447 --> 00:03:38,803
+A single unreviewed report never removes a station.
+
+62
+00:03:38,947 --> 00:03:41,500
+A moderator has to review it first.
+
+63
+00:03:43,029 --> 00:03:46,371
+Now, in a separate window, we're signed in as a moderator.
+
+64
+00:03:46,542 --> 00:03:49,838
+The review screen puts the driver's evidence next to LTA's
+
+65
+00:03:49,858 --> 00:03:52,108
+official status for that connector.
+
+66
+00:03:55,309 --> 00:03:58,118
+Every decision, whether it's verify, reject,
+
+67
+00:03:58,138 --> 00:04:01,105
+merge, resolve, or expire, needs a reason,
+
+68
+00:04:01,125 --> 00:04:03,256
+and it's written to an audit history.
+
+69
+00:04:03,440 --> 00:04:06,559
+If two moderators act on the same report at once,
+
+70
+00:04:06,625 --> 00:04:09,986
+the second one gets a conflict instead of silently overwriting
+
+71
+00:04:10,006 --> 00:04:11,006
+the first.
+
+72
+00:04:13,375 --> 00:04:17,079
+Back to the driver. Refreshing the saved plan fetches live
+
+73
+00:04:17,099 --> 00:04:18,152
+data again.
+
+74
+00:04:19,409 --> 00:04:22,343
+The verified faulty station is now filtered out,
+
+75
+00:04:22,580 --> 00:04:26,283
+the old selection is cleared, and PlugPlan suggests the next
+
+76
+00:04:26,303 --> 00:04:30,146
+best alternative. But the driver makes the final choice.
+
+77
+00:04:30,317 --> 00:04:33,783
+Nothing is switched automatically, and earlier versions stay
+
+78
+00:04:33,803 --> 00:04:34,843
+untouched.
+
+79
+00:04:38,625 --> 00:04:42,954
+Under the hood, PlugPlan is built with Next.js and TypeScript.
+
+80
+00:04:43,125 --> 00:04:47,000
+Supabase provides authentication, a Postgres database with
+
+81
+00:04:47,020 --> 00:04:50,362
+row-level security, and private image storage,
+
+82
+00:04:50,599 --> 00:04:53,849
+and the app is deployed on Vercel in the Singapore region.
+
+83
+00:04:54,020 --> 00:04:57,092
+The ranking engine is hand-written and covered by unit tests
+
+84
+00:04:57,112 --> 00:05:01,224
+with fixed numerical expectations, plus eight end-to-end browser
+
+85
+00:05:01,244 --> 00:05:05,099
+journeys. In a load test of a hundred concurrent requests,
+
+86
+00:05:05,296 --> 00:05:08,415
+ninety-five percent finished in under two seconds.
+
+87
+00:05:11,446 --> 00:05:15,926
+PlugPlan SG. Charge enough, not full, with every recommendation
+
+88
+00:05:15,946 --> 00:05:18,459
+explained. Thanks for watching.
+

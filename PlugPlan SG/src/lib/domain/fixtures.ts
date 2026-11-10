@@ -108,6 +108,7 @@ export const DEMO_FAULTS: FaultEvidence[] = [
   { stationId: 'DEMO-FAULT', reportId: 'DEMO_FIXTURE-REPORT-1', decisionId: 'DEMO_FIXTURE-DECISION-1', expiresAt: '2026-10-16T12:00:00+08:00' },
 ];
 
+/** Builds synthetic Singapore-scale routes scaled to the vehicle's range for Demo Fixture mode. */
 export function createDemoScenario(input: PlanInput, profile: VehicleProfile): {
   snapshot: OfficialSnapshot;
   routes: CandidateRoute[];

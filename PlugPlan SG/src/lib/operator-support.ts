@@ -1,4 +1,5 @@
 // Official support pages checked on 15 October 2026; unknown operators have no inferred URL.
+/** Returns the official support link for a known operator, otherwise null. */
 export function operatorSupportUrl(operator: string): string | null {
   const name = operator.toUpperCase().replace(/[^A-Z0-9+]/g, '');
   if (name.includes('SPMOBILITY') || name.includes('SPGROUP')) return 'https://www.spmobility.sg/support';

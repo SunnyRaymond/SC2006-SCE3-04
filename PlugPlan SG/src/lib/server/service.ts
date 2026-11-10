@@ -218,6 +218,15 @@ async function calculate(context: RequestContext, input: PlanInput, profile: Veh
   return { result, routes, fallbackMessage, cacheSnapshot: snapshot, routeRetrievedAt };
 }
 
+/**
+ * Application controller: validates one API action and coordinates providers,
+ * PlanEngine and persistence for the signed-in user.
+ *
+ * @param context Authenticated user and their row-level-secured database client.
+ * @param body Request body whose `action` field selects the operation.
+ * @returns The JSON payload for the API response.
+ * @throws ApiError for invalid input, permissions and conflicts.
+ */
 export async function handleAction(context: RequestContext, body: Record<string, unknown>): Promise<Record<string, unknown>> {
   const action = body.action;
   switch (action) {

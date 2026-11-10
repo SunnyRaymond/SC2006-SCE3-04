@@ -1,3 +1,7 @@
+/**
+ * @file PlanEngine control class: the pure, deterministic charging-plan calculation.
+ * It has no I/O; the caller supplies a provider snapshot, routes, faults and the check time.
+ */
 import type {
   CandidateRoute, Connector, Exclusion, FaultEvidence, OfficialSnapshot, PlanInput,
   PlanResult, Recommendation, RouteEstimate, Station, VehicleProfile,
@@ -172,6 +176,10 @@ function estimateCost(connector: Connector, chargerKWh: number, chargingMinutes:
   return null;
 }
 
+/**
+ * Applies every feasibility gate to one station, in the order the Driver sees reasons.
+ * Returns one candidate per feasible connector, or a single coded exclusion.
+ */
 function failureForStation(
   station: Station,
   route: CandidateRoute | undefined,
@@ -323,6 +331,24 @@ function failureForStation(
   return { candidates: [], exclusion: makeExclusion(station, 'NO_FEASIBLE_CONNECTOR', 'No compatible connector can meet the charging requirements.') };
 }
 
+/**
+ * Produces a ranked charging plan for one trip.
+ *
+ * Validates the input, assesses each station, keeps the best connector per station,
+ * ranks by the chosen strategy, removes stations with active verified faults and
+ * returns at most three recommendations with explained exclusions.
+ *
+ * @param args.input Trip request (place, SOC, limits, strategy, optional manual target).
+ * @param args.profile Vehicle assumptions used for energy and power limits.
+ * @param args.snapshot Latest station and connector data with its freshness times.
+ * @param args.directRoute Origin-to-destination route, the detour baseline.
+ * @param args.routes Per-station legs; a station without one is excluded as NO_ROUTE.
+ * @param args.faults Verified fault marks; only those expiring after `now` apply.
+ * @param args.now Calculation time; defaults to the current time.
+ * @returns The plan result, including inputs and assumptions for immutable versioning.
+ * @throws ZodError when the input or profile is out of range.
+ * @throws RangeError when the direct route or a time value is unusable.
+ */
 export function calculatePlan({
   input, profile, snapshot, directRoute, routes, faults, now,
 }: {
